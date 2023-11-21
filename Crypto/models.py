@@ -15,3 +15,16 @@ class HistoricalPrice(models.Model):
 
     def __str__(self):
         return self.username
+class CryptoAsset(models.Model):
+    name = models.CharField(max_length=100)
+    price = models.DecimalField(max_digits=20, decimal_places=5)
+    high = models.DecimalField(max_digits=20, decimal_places=5, null=True, blank=True)
+    low = models.DecimalField(max_digits=20, decimal_places=5, null=True, blank=True)
+    price_change_24h = models.DecimalField(max_digits=20, decimal_places=5, null=True, blank=True)
+    price_change_percentage_24h = models.DecimalField(max_digits=20, decimal_places=5, null=True, blank=True)
+    market_cap = models.DecimalField(max_digits=20, decimal_places=5, null=True, blank=True)
+    volume_24h = models.DecimalField(max_digits=20, decimal_places=5, null=True, blank=True)
+    circulating_supply = models.DecimalField(max_digits=20, decimal_places=5, null=True, blank=True)
+
+    def __str__(self):
+        return self.name

@@ -12,7 +12,8 @@ from .models import HistoricalPrice
 from datetime import date, timedelta
 from django.core.exceptions import ObjectDoesNotExist  # Import the exception
 import praw
-
+from .models import CryptoAsset
+from .forms import FieldSelectionForm
 
 def signup(request):
     if request.method == 'POST':
@@ -49,7 +50,7 @@ def user_login(request):
     return render(request, 'login.html', {'form': form})
 
 def index(request):
-    return render(request, 'base.html')
+    return render(request, 'landingpage.html')
 
 def portfolio(request):
     return render(request, 'portfolio.html')
@@ -109,9 +110,10 @@ def landing_page(request):
 
     # Making a GET request to CoinGecko API
     response = requests.get(crypto_api_url, params=params)
-
+    print(response.json())
     if response.status_code == 200:
         trending_cryptos = response.json()  # Extracting JSON data if request is successful
+        print(trending_cryptos)
     else:
         trending_cryptos = []  # Handling error scenario when API request fails
 
@@ -134,11 +136,81 @@ def landing_page(request):
     community_posts = fetch_community_posts()
 
     fear_greed_index = fetch_fear_greed_index()
+    form = FieldSelectionForm(request.POST or None)
+
+    if request.method == 'POST' and form.is_valid():
+        selected_fields = form.cleaned_data['field_selection']
+
+        # Retrieve only selected fields from the database
+        assets = CryptoAsset.objects.values(*selected_fields)
+
+        context = {
+            'form': form,
+            'assets': assets,
+        }
+        return render(request, 'display_selected_fields.html', context)
 
     context = {
         'trending_cryptos': trending_cryptos,
         'community_posts': community_posts,
-        'fear_greed_index': fear_greed_index,  # Adding Fear & Greed Index to context
+        'fear_greed_index': fear_greed_index,
+        'form': form
         # Other context data
     }
-    return render(request, 'base.html', context)
+
+    return render(request, 'landingpage.html', context)
+
+
+def crypto_assets(request):
+    # API endpoint to fetch cryptocurrency data (replace with actual API endpoint)
+    api_url = 'https://api.coingecko.com/api/v3/coins/markets'
+
+    # Parameters for the API request
+    params = {
+        'vs_currency': 'usd',
+        'order': 'market_cap_desc',
+        'per_page': 50,
+        'page': 1,
+        'sparkline': False,
+    }
+
+    # Making a GET request to fetch cryptocurrency data from the API
+    response = requests.get(api_url, params=params)
+
+    if response.status_code == 200:
+        data = response.json()
+        crypto_assets = []
+
+        for item in data:
+            # Check if all necessary fields are present in the API response
+            if all(key in item for key in ['name', 'current_price', 'high_24h', 'low_24h',
+                                           'price_change_24h', 'price_change_percentage_24h',
+                                           'market_cap', 'total_volume', 'circulating_supply']):
+                asset = CryptoAsset(
+                    name=item['name'],
+                    price=item['current_price'],
+                    high=item['high_24h'],
+                    low=item['low_24h'],
+                    price_change_24h=item['price_change_24h'],
+                    price_change_percentage_24h=item['price_change_percentage_24h'],
+                    market_cap=item['market_cap'],
+                    volume_24h=item['total_volume'],
+                    circulating_supply=item['circulating_supply'],
+                    # icon_url=item['image']
+                )
+
+                crypto_assets.append(asset)
+
+        # Saving fetched data into the database
+        CryptoAsset.objects.bulk_create(crypto_assets)
+
+        # Retrieving data from the database
+        assets = CryptoAsset.objects.all()
+    else:
+        assets = CryptoAsset.objects.all()  # Fallback to database if API fails
+
+    context = {
+        'crypto_assets': assets,
+    }
+    return render(request, 'crypto_assets.html', context)
+

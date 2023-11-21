@@ -11,7 +11,8 @@ urlpatterns = [
     path('', views.landing_page, name='index'),
     path('login/', views.user_login, name='login'),
     path('signup/', views.signup, name='signup'),
-    path('portfolio/', views.portfolio, name='portfolio')
+    path('portfolio/', views.portfolio, name='portfolio'),
+    path('crypto_assets/', views.crypto_assets, name='crypto_assets')
 
 ]
 
