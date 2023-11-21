@@ -1,53 +1,62 @@
-<!-- landing_page.html -->
-
+{% load static %}
+<!-- base.html -->
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Crypto Exchange Landing Page</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}My Site{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+          theme: {
+            container: {
+                center: true
+              },
+            extend: {
+              colors: {
+                clifford: '#da373d',
+              }
+            }
+          }
+        }
+      </script>
 </head>
 <body>
-<div class="fear-greed-index">
-        <h2>Fear & Greed Index</h2>
-        {% if fear_greed_index %}
-            <p>{{ fear_greed_index }}</p>
-        {% else %}
-            <p>No data available</p>
-        {% endif %}
-    </div>
-    <div class="trending-section">
-        <h2>Trending Cryptocurrencies</h2>
-        <ul>
-            {% for crypto in trending_cryptos %}
-                <li>
-                    {{ crypto.name }} ({{ crypto.symbol }}):
-                    ${{ crypto.current_price|floatformat:2 }} <!-- Display current price -->
-                    {% if crypto.fluctuation_percentage is not None %}
-                        {% if crypto.fluctuation_percentage > 0 %}
-                            <span style="color: green;">({{ crypto.fluctuation_percentage|floatformat:2 }}% &#8593;)</span>
-                        {% elif crypto.fluctuation_percentage < 0 %}
-                            <span style="color: red;">({{ crypto.fluctuation_percentage|floatformat:2 }}% &#8595;)</span>
-                        {% else %}
-                            <span>({{ crypto.fluctuation_percentage|floatformat:2 }}%)</span>
-                        {% endif %}
-                    {% endif %}
-                </li>
-            {% endfor %}
-        </ul>
-    </div>
+    <!-- <h1 class="text-3xl font-bold underline text-clifford">
+        Hello world!
+      </h1> -->
+      <header class="bg-white shadow-md">
+        <nav class="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8" aria-label="Global">
+          <div class="flex lg:flex-1">
+            <a href="#" class="-m-1.5 p-1.5 flex items-center">
+              <img class="h-10 w-auto" src="{% static 'logo.png' %}" alt="">
+              <span class="font-semibold">CryptoBase</span>
+            </a>
+          </div>
+          <div class="flex gap-x-12">
+            <a href="#" class="text-sm font-semibold leading-6 text-gray-900">Saved</a>
+            <a href="#" class="text-sm font-semibold leading-6 text-gray-900">History</a>
+            <a href="#" class="text-sm font-semibold leading-6 text-gray-900">
+              <span class=" inline-flex align-items justify-center">
 
-    <div class="community-posts">
-        <h2>Community Posts/News</h2>
-        <ul>
-            {% for post in community_posts %}
-                <li>
-                    <strong>{{ post.title }}</strong> by {{ post.author }}<br>
-                    {{ post.content }}
-                </li>
-            {% endfor %}
-        </ul>
+                <span class="mr-2">Profile</span>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                </svg>
+              </span>
+            </a>
+          </div>
+        </nav>
+        <!-- Mobile menu, show/hide based on menu open state. -->
+        
+      </header>
+
+    <div id="content" class="container">
+        {% block content %}{% endblock %}
     </div>
-
-    <!-- Other sections of your landing page -->
-
+    <!-- <div id="footer">
+        <p>{% block footer %}© 2023 My Site{% endblock %}</p>
+    </div> -->
 </body>
 </html>
