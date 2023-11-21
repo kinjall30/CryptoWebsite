@@ -8,7 +8,7 @@ from .views import signup, user_login, index
 app_name = 'CoinCraft'
 
 urlpatterns = [
-    path('', views.index, name='index'),
+    path('', views.landing_page, name='index'),
     path('login/', views.user_login, name='login'),
     path('signup/', views.signup, name='signup'),
     path('portfolio/', views.portfolio, name='portfolio')
