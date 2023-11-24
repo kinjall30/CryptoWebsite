@@ -50,6 +50,7 @@
 <body>
     <div class="container">
         <h1>Crypto Watchlist</h1>
+        <button id = "add-asset-btn">Add Asset</button>
         <table class="table table-bordered">
             <thead>
                 <tr>
@@ -74,6 +75,38 @@
                 {% endfor %}
             </tbody>
         </table>
+
+        <!-- modal -->`
+        <div>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Symbol</th>
+                        <th>Price (USD)</th>
+                        <th>Market Cap (USD)</th>
+                        <th>24h Volume (USD)</th>
+                        <th>Change (24h)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for coin in coins %}
+                    <tr>
+                        <td>{{ coin.name }}</td>
+                        <td>{{ coin.symbol }}</td>
+                        <td>${{ coin.price|floatformat:2 }}</td>
+                        <td>${{ coin.market_cap|floatformat:2 }}</td>
+                        <td>${{ coin.volume_24h|floatformat:2 }}</td>
+                        <td>{{ coin.change_24h|floatformat:2 }}%</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
+    <script>
+        let assetBtn = document.getElementById('add-asset-btn');
+
+    </script>
 </body>
 </html>

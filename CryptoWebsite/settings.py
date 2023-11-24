@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'Crypto.apps.CryptoConfig',
+    "Payments.apps.PaymentsConfig"
 ]
 
 MIDDLEWARE = [
@@ -118,8 +119,14 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = '/static/'
+STATICFILES_DIRS = [BASE_DIR / 'static/']
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+
+STRIPE_PUBLIC_KEY = 'pk_test_51OCGH3FEvh6Bo2szU5hwf2gP3IgoWK64J2cWLsN1gklp39Tg78GMZcrkqRl7WlH7YZF96RTySpLvyCH16veWCqMf002rikEm44'
+STRIPE_SECRET_KEY = 'sk_test_51OCGH3FEvh6Bo2szZUnNKNNsSqFyssZ5Fm9GTCS5ND6KuvVmDe6XmapBQRwJApeSPtC9pYjPOjlBM6K11xKpaCye00yeeuUQsV'
