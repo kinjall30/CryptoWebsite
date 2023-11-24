@@ -1,112 +1,74 @@
-<!-- crypto/templates/crypto/watchlist.html -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crypto Watchlist</title>
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f8f9fa;
-            margin: 0;
-            padding: 0;
-        }
+{% extends 'base.html' %}
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
+{% block content %}
 
-        h1 {
-            color: #343a40;
-            text-align: center;
-            margin-top: 30px;
-        }
+<div class="container">
+    <h1 class=" mt-10 text-center text-xl">Crypto Watchlist</h1>
+    <button onclick="toggleClass()" id  = "assetBtn" class="ml-[92%] bg-blue-100 py-2 px-3.5 mb-3 font-semibold">Add Asset</button>
+    <table class="table table-bordered border border-1 w-full">
+        <thead class="bg-blue-100">
+            <tr>
+                <th>Name</th>
+                <th>Symbol</th>
+                <th>Price (USD)</th>
+                <th>Market Cap (USD)</th>
+                <th>24h Volume (USD)</th>
+                <th>Change (24h)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for coin in coins %}
+            <tr class="even:bg-blue-50">
+                <td>{{ coin.name }}</td>
+                <td>{{ coin.symbol }}</td>
+                <td>${{ coin.price|floatformat:2 }}</td>
+                <td>${{ coin.market_cap|floatformat:2 }}</td>
+                <td>${{ coin.volume_24h|floatformat:2 }}</td>
+                <td>{{ coin.change_24h|floatformat:2 }}%</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        th, td {
-            padding: 15px;
-            text-align: left;
-            border-bottom: 1px solid #dee2e6;
-        }
-
-        th {
-            background-color: #007bff;
-            color: #fff;
-        }
-
-        tr:hover {
-            background-color: #f8f9fa;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>Crypto Watchlist</h1>
-        <button id = "add-asset-btn">Add Asset</button>
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Symbol</th>
-                    <th>Price (USD)</th>
-                    <th>Market Cap (USD)</th>
-                    <th>24h Volume (USD)</th>
-                    <th>Change (24h)</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for coin in coins %}
-                <tr>
-                    <td>{{ coin.name }}</td>
-                    <td>{{ coin.symbol }}</td>
-                    <td>${{ coin.price|floatformat:2 }}</td>
-                    <td>${{ coin.market_cap|floatformat:2 }}</td>
-                    <td>${{ coin.volume_24h|floatformat:2 }}</td>
-                    <td>{{ coin.change_24h|floatformat:2 }}%</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-
-        <!-- modal -->`
+    <div id="asset-modal" class=" hidden inset-0 left-1/2 top-1/2 -translate-x-1/2  shadow-md h-[500px] relative pt-8 w-[50%]">
+        <span onclick="toggleClass()" class=" inline-block absolute right-0 top-0 bg-gray-300  px-2.5 py-1 font-bold cursor-pointer">X</span>
         <div>
-            <table class="table table-bordered">
-                <thead>
+            <table class="table table-bordered border border-1 w-full ">
+                <thead class="bg-blue-100">
                     <tr>
                         <th>Name</th>
                         <th>Symbol</th>
-                        <th>Price (USD)</th>
-                        <th>Market Cap (USD)</th>
-                        <th>24h Volume (USD)</th>
-                        <th>Change (24h)</th>
+                        <th>Add to wishlist</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for coin in coins %}
-                    <tr>
+                    <tr class="even:bg-blue-50">
                         <td>{{ coin.name }}</td>
                         <td>{{ coin.symbol }}</td>
                         <td>${{ coin.price|floatformat:2 }}</td>
-                        <td>${{ coin.market_cap|floatformat:2 }}</td>
-                        <td>${{ coin.volume_24h|floatformat:2 }}</td>
-                        <td>{{ coin.change_24h|floatformat:2 }}%</td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
     </div>
-    <script>
-        let assetBtn = document.getElementById('add-asset-btn');
+</div>
 
-    </script>
-</body>
-</html>
+<script>
+function toggleClass() {
+      var element = document.getElementById("asset-modal");
+
+      // Check if the element has the 'highlight' class
+      if (element.classList.contains("block")) {
+        // If it does, remove the class
+        element.classList.remove("block");
+        element.classList.add("hidden");
+      } else {
+        // If it doesn't, add the class
+        element.classList.add("block");
+        element.classList.remove("hidden");
+      }
+    }
+</script>
+{% endblock %}
