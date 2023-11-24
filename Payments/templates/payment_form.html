@@ -1,15 +1,14 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<body>
-    <h1>Enter Payment Information</h1>
-    <form method="post" action="{% url 'Payments' %}">
+<div class="flex mt-10 flex-col items-center">
+    <h1 class="text-xl">Enter Payment Information</h1>
+    <form class="flex flex-col w-2/4 my-3" method="post" action="{% url 'Payments' %}">
         {% csrf_token %}
         <label for="amount">Amount:</label>
-        <input type="text" id="amount" name="amount" required>
-        <br>
-        <button type="submit">Submit Payment</button>
+        <input class="border py-2 px-2 " type="number" id="amount" name="amount" required>
+        <button class="bg-[#2196f3] text-white py-2 mt-3" type="submit">Submit Payment</button>
     </form>
-</body>
+</div>
 
 {% endblock %}

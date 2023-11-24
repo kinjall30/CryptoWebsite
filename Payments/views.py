@@ -30,9 +30,8 @@ def payment_view(request):
                 'quantity': 1,
             }],
             mode='payment',
-            success_url=request.build_absolute_uri(f'success/?sessionId={session.id}'),
+            success_url=request.build_absolute_uri(f'success/?sessionId=23424gdrgt34t34r3r3'),
             cancel_url=request.build_absolute_uri('/cancel/'),
-            automatic_tax={'enabled': True}
         )
 
         print(session, "---------------")
