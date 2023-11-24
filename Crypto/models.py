@@ -10,3 +10,11 @@ class UserDetails(models.Model):
 
     def __str__(self):
         return self.username
+
+class Coin(models.Model):
+    name = models.CharField(max_length=100)
+    symbol = models.CharField(max_length=10)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    market_cap = models.DecimalField(max_digits=15, decimal_places=2)
+    volume_24h = models.DecimalField(max_digits=15, decimal_places=2)
+    change_24h = models.DecimalField(max_digits=5, decimal_places=2)
