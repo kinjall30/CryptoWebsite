@@ -118,7 +118,7 @@ def watchlist(request):
         
 
         print(coins, "--------------rrrrrrrrrrrrrrr")
-        return render(request, 'watchlist.html', {'coins': coins})
+        return render(request, 'watchlist.html', {'coins': coins, 'tapan': "hello"})
     except requests.RequestException as e:
         # Log the exception for debugging purposes
         print(f"Error fetching data from CoinGecko API: {e}")

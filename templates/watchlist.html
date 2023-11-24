@@ -3,9 +3,9 @@
 {% block content %}
 
 <div class="container">
-    <h1 class=" mt-10 text-center text-xl">Crypto Watchlist</h1>
-    <button onclick="toggleClass()" id  = "assetBtn" class="ml-[92%] bg-blue-100 py-2 px-3.5 mb-3 font-semibold">Add Asset</button>
-    <table class="table table-bordered border border-1 w-full">
+    <h1 class="mt-10 text-center text-xl">Crypto Watchlist</h1>
+    <button onclick="toggleClass()" id="assetBtn" class="ml-[92%] bg-blue-100 py-2 px-3.5 mb-3 font-semibold">Add Asset</button>
+    <table id="main-table" class="table table-bordered border border-1 w-full">
         <thead class="bg-blue-100">
             <tr>
                 <th>Name</th>
@@ -30,10 +30,10 @@
         </tbody>
     </table>
 
-    <div id="asset-modal" class=" hidden inset-0 left-1/2 top-1/2 -translate-x-1/2  shadow-md h-[500px] relative pt-8 w-[50%]">
-        <span onclick="toggleClass()" class=" inline-block absolute right-0 top-0 bg-gray-300  px-2.5 py-1 font-bold cursor-pointer">X</span>
+    <section id="asset-modal" class="hidden inset-0 left-1/2 top-1/2 -translate-x-1/2 shadow-md h-[500px] relative pt-8 w-[50%]">
+        <span onclick="toggleClass()" class="inline-block absolute right-0 top-0 bg-gray-300 px-2.5 py-1 font-bold cursor-pointer">X</span>
         <div>
-            <table class="table table-bordered border border-1 w-full ">
+            <table class="table table-bordered border border-1 w-full">
                 <thead class="bg-blue-100">
                     <tr>
                         <th>Name</th>
@@ -41,34 +41,95 @@
                         <th>Add to wishlist</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="asset-table-body">
                     {% for coin in coins %}
                     <tr class="even:bg-blue-50">
                         <td>{{ coin.name }}</td>
                         <td>{{ coin.symbol }}</td>
-                        <td>${{ coin.price|floatformat:2 }}</td>
+                        <td>
+                            <input
+                                type="checkbox"
+                                class="asset-checkbox"
+                                data-coin-name="{{ coin.name }}"
+                                data-coin-symbol="{{ coin.symbol }}"
+                            />
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
+            <button onclick="saveChoices()">Save Choices</button>
         </div>
-    </div>
+    </section>
 </div>
 
+<!-- Your existing script -->
 <script>
-function toggleClass() {
+    // console.log('{{tapan}}', "------------------------ttttt");
+    const coins = JSON.parse("{{coins|safe}}".split("'").join("\""));
+    document.addEventListener('DOMContentLoaded', function () {
+      updateAssetList(); // Update the asset list initially
+    });
+  
+    function toggleClass() {
       var element = document.getElementById("asset-modal");
-
-      // Check if the element has the 'highlight' class
+  
       if (element.classList.contains("block")) {
-        // If it does, remove the class
-        element.classList.remove("block");
-        element.classList.add("hidden");
+          element.classList.remove("block");
+          element.classList.add("hidden");
       } else {
-        // If it doesn't, add the class
-        element.classList.add("block");
-        element.classList.remove("hidden");
+          element.classList.add("block");
+          element.classList.remove("hidden");
       }
     }
-</script>
+  
+    function saveChoices() {
+      var selectedAssets = [];
+      var checkboxes = document.querySelectorAll('.asset-checkbox:checked');
+  
+      checkboxes.forEach(function (checkbox) {
+          var name = checkbox.getAttribute('data-coin-name');
+          var symbol = checkbox.getAttribute('data-coin-symbol');
+          selectedAssets.push({ name, symbol });
+      });
+  
+      console.log('Selected Assets:', selectedAssets);
+  
+      // Pass the coins data to the updateMainTable function
+    
+     
+      updateMainTable(selectedAssets, coins);
+    }
+  
+    function updateMainTable(selectedAssets, coins) {
+
+      var mainTableBody = document.querySelector('#main-table tbody');
+      mainTableBody.innerHTML = ''; // Clear existing content
+  
+      // Iterate through selected assets and add rows to the main table
+      selectedAssets.forEach(function (asset) {
+          // Find the corresponding coin data for the selected asset
+
+          var coinData = coins.filter(function (coin) {
+              return coin.name === asset.name && coin.symbol === asset.symbol;
+          });
+  console.log(coinData , "hello")
+          if (coinData) {
+              var row = document.createElement('tr');
+              row.className = 'even:bg-blue-50';
+              row.innerHTML = `
+                  <td>${coinData[0]["name"]}</td>
+                  <td>${coinData[0]["symbol"]}</td>
+                  <td>$${coinData[0]["price"]}</td>
+                  <td>$${coinData[0]["market_cap"]}</td>
+                  <td>$${coinData[0]["volume_24h"]}</td>
+                  <td>${coinData[0]["change_24h"]}%</td>
+              `;
+              mainTableBody.appendChild(row);
+          }
+      });
+    }
+  </script>
+  
+
 {% endblock %}
