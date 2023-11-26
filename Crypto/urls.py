@@ -12,11 +12,10 @@ urlpatterns = [
     path('login/', views.user_login, name='login'),
     path('signup/', views.signup, name='signup'),
     path('portfolio/', views.portfolio, name='portfolio'),
-<<<<<<< HEAD
     path('crypto_assets/', views.crypto_assets, name='crypto_assets'),
-=======
     path('watchlist/', views.watchlist, name='watchlist'),
->>>>>>> origin/rujuta
+    path('base/', views.base, name='base'),
+
 
 ]
 

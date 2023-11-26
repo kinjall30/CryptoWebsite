@@ -1,197 +1,267 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Crypto Exchange Landing Page</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f8f8f8;
-            color: #333;
-        }
+{% extends 'base.html' %}
+{% block title %}Crypto Exchange Landing Page{% endblock %}
+{% block content %}
+    <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 20px; font-family: Arial, sans-serif; background-color: #f8f8f8; color: #333;">
+        <h1>Crypto Exchange Landing Page</h1>
 
-        h1 {
-            text-align: center;
-            padding: 20px;
-            margin-bottom: 20px;
-            color: #444;
-            border-bottom: 1px solid #ddd;
-        }
+        <div class="fear-greed-index" style="background-color: #fff; border-radius: 8px; padding: 20px; margin-bottom: 20px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+            <h2>Fear & Greed Index</h2>
+            {% if fear_greed_index %}
+                <p>{{ fear_greed_index }}</p>
+            {% else %}
+                <p>No data available</p>
+            {% endif %}
+        </div>
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        .fear-greed-index {
-            background-color: #fff;
-            border-radius: 5px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .fear-greed-index h2 {
-            margin-top: 0;
-            color: #007bff;
-        }
-
-        .trending-section {
-            background-color: #fff;
-            border-radius: 5px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .trending-section h2 {
-            margin-top: 0;
-            color: #007bff;
-        }
-
-        .trending-section ul {
-            list-style-type: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .trending-section li {
-            padding: 10px 0;
-            border-bottom: 1px solid #ddd;
-            color: #666;
-        }
-
-        .community-posts {
-            background-color: #fff;
-            border-radius: 5px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .community-posts h2 {
-            margin-top: 0;
-            color: #007bff;
-        }
-
-        .community-posts ul {
-            list-style-type: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .community-posts li {
-            padding: 10px 0;
-            border-bottom: 1px solid #ddd;
-            color: #444;
-        }
-
-        form {
-            margin: 20px;
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            background-color: #f9f9f9;
-            max-width: 400px;
-        }
-
-        fieldset {
-            margin: 10px 0;
-            border: none;
-        }
-
-        legend {
-            font-weight: bold;
-            color: #333;
-        }
-
-        input[type="submit"] {
-            padding: 10px 20px;
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-
-        input[type="submit"]:hover {
-            background-color: #0056b3;
-        }
-
-        input[type="checkbox"] {
-            margin-right: 5px;
-        }
-    </style>
-</head>
-<body>
-
-<div class="container">
-    <h1>Crypto Exchange Landing Page</h1>
-
-    <div class="fear-greed-index">
-        <h2>Fear & Greed Index</h2>
-        {% if fear_greed_index %}
-            <p>{{ fear_greed_index }}</p>
-        {% else %}
-            <p>No data available</p>
-        {% endif %}
-    </div>
-
-    <div class="trending-section">
-        <h2>Trending Cryptocurrencies</h2>
-        <ul>
-            {% for crypto in trending_cryptos %}
-                <li>
-                    {{ crypto.name }} ({{ crypto.symbol }}):
-                    ${{ crypto.current_price|floatformat:2 }} <!-- Display current price -->
-                    {% if crypto.fluctuation_percentage is not None %}
-                        {% if crypto.fluctuation_percentage > 0 %}
-                            <span style="color: green;">({{ crypto.fluctuation_percentage|floatformat:2 }}% &#8593;)</span>
-                        {% elif crypto.fluctuation_percentage < 0 %}
-                            <span style="color: red;">({{ crypto.fluctuation_percentage|floatformat:2 }}% &#8595;)</span>
-                        {% else %}
-                            <span>({{ crypto.fluctuation_percentage|floatformat:2 }}%)</span>
+        <div class="trending-section" style="background-color: #fff; border-radius: 8px; padding: 20px; margin-bottom: 20px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+            <h2>Trending Cryptocurrencies</h2>
+            <ul>
+                {% for crypto in trending_cryptos %}
+                    <li>
+                        {{ crypto.name }} ({{ crypto.symbol }}):
+                        ${{ crypto.current_price|floatformat:2 }}
+                        {% if crypto.fluctuation_percentage is not None %}
+                            {% if crypto.fluctuation_percentage > 0 %}
+                                <span style="color: green;">({{ crypto.fluctuation_percentage|floatformat:2 }}% &#8593;)</span>
+                            {% elif crypto.fluctuation_percentage < 0 %}
+                                <span style="color: red;">({{ crypto.fluctuation_percentage|floatformat:2 }}% &#8595;)</span>
+                            {% else %}
+                                <span>({{ crypto.fluctuation_percentage|floatformat:2 }}%)</span>
+                            {% endif %}
                         {% endif %}
-                    {% endif %}
-                </li>
-            {% endfor %}
-        </ul>
-    </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
 
-    <div class="community-posts">
-        <h2>Community Posts/News</h2>
-        <ul>
-            {% for post in community_posts %}
-                <li>
-                    <strong>{{ post.title }}</strong> by {{ post.author }}<br>
-                    {{ post.content }}
-                </li>
-            {% endfor %}
-        </ul>
-    </div>
+        <div class="community-posts" style="background-color: #fff; border-radius: 8px; padding: 20px; margin-bottom: 20px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+            <h2>Community Posts/News</h2>
+            <ul>
+                {% for post in community_posts %}
+                    <li>
+                        <strong>{{ post.title }}</strong> by {{ post.author }}<br>
+                        {{ post.content }}
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
 
-    <h1>Select Fields to Display</h1>
+        <h1>Select Fields to Display</h1>
 
-    <form method="post">
-        {% csrf_token %}
-        <fieldset>
-            <legend>Fields:</legend>
-            <label><input type="checkbox" name="field_selection" value="name"> Name</label><br>
-            <label><input type="checkbox" name="field_selection" value="price"> Price</label><br>
-            <label><input type="checkbox" name="field_selection" value="high"> High (24h)</label><br>
+        <form method="post" style="margin: 20px; padding: 20px; border: 1px solid #ddd; border-radius: 5px; background-color: #f9f9f9; max-width: 400px;">
+            {% csrf_token %}
+            <fieldset>
+                <legend>Fields:</legend>
+                <label><input type="checkbox" name="field_selection" value="name"> Name</label><br>
+                <label><input type="checkbox" name="field_selection" value="price"> Price</label><br>
+                <label><input type="checkbox" name="field_selection" value="high"> High (24h)</label><br>
             <label><input type="checkbox" name="field_selection" value="low"> Low (24h)</label><br>
             <label><input type="checkbox" name="field_selection" value="price_change_24h"> Price Change (24h)</label><br>
             <label><input type="checkbox" name="field_selection" value="price_change_percentage_24h"> Price Change (%) (24h)</label><br>
             <label><input type="checkbox" name="field_selection" value="market_cap"> Market Cap</label><br>
             <label><input type="checkbox" name="field_selection" value="volume_24h"> Volume (24h)</label><br>
             <label><input type="checkbox" name="field_selection" value="circulating_supply"> Circulating Supply</label><br>
-        </fieldset>
-        <input type="submit" value="Display Selected Fields">
-    </form>
-</div>
+            </fieldset>
+            <input type="submit" value="Display Selected Fields">
+        </form>
+    </div>
+{% endblock %}
 
-</body>
-</html>
+{#<!DOCTYPE html>#}
+{##}
+{#<html>#}
+{#<head>#}
+{#    <title></title>#}
+{#    <style>#}
+{#        body {#}
+{#            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;#}
+{#            margin: 0;#}
+{#            padding: 0;#}
+{#            background-color: #f8f8f8;#}
+{#            color: #333;#}
+{#        }#}
+{##}
+{#        h1 {#}
+{#            text-align: center;#}
+{#            padding: 20px;#}
+{#            margin-bottom: 20px;#}
+{#            color: #444;#}
+{#            border-bottom: 1px solid #ddd;#}
+{#        }#}
+{##}
+{#        .container {#}
+{#            max-width: 1200px;#}
+{#            margin: 0 auto;#}
+{#            padding: 20px;#}
+{#        }#}
+{##}
+{#        .fear-greed-index {#}
+{#            background-color: #fff;#}
+{#            border-radius: 5px;#}
+{#            padding: 20px;#}
+{#            margin-bottom: 20px;#}
+{#            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);#}
+{#        }#}
+{##}
+{#        .fear-greed-index h2 {#}
+{#            margin-top: 0;#}
+{#            color: #007bff;#}
+{#        }#}
+{##}
+{#        .trending-section {#}
+{#            background-color: #fff;#}
+{#            border-radius: 5px;#}
+{#            padding: 20px;#}
+{#            margin-bottom: 20px;#}
+{#            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);#}
+{#        }#}
+{##}
+{#        .trending-section h2 {#}
+{#            margin-top: 0;#}
+{#            color: #007bff;#}
+{#        }#}
+{##}
+{#        .trending-section ul {#}
+{#            list-style-type: none;#}
+{#            padding: 0;#}
+{#            margin: 0;#}
+{#        }#}
+{##}
+{#        .trending-section li {#}
+{#            padding: 10px 0;#}
+{#            border-bottom: 1px solid #ddd;#}
+{#            color: #666;#}
+{#        }#}
+{##}
+{#        .community-posts {#}
+{#            background-color: #fff;#}
+{#            border-radius: 5px;#}
+{#            padding: 20px;#}
+{#            margin-bottom: 20px;#}
+{#            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);#}
+{#        }#}
+{##}
+{#        .community-posts h2 {#}
+{#            margin-top: 0;#}
+{#            color: #007bff;#}
+{#        }#}
+{##}
+{#        .community-posts ul {#}
+{#            list-style-type: none;#}
+{#            padding: 0;#}
+{#            margin: 0;#}
+{#        }#}
+{##}
+{#        .community-posts li {#}
+{#            padding: 10px 0;#}
+{#            border-bottom: 1px solid #ddd;#}
+{#            color: #444;#}
+{#        }#}
+{##}
+{#        form {#}
+{#            margin: 20px;#}
+{#            padding: 20px;#}
+{#            border: 1px solid #ddd;#}
+{#            border-radius: 5px;#}
+{#            background-color: #f9f9f9;#}
+{#            max-width: 400px;#}
+{#        }#}
+{##}
+{#        fieldset {#}
+{#            margin: 10px 0;#}
+{#            border: none;#}
+{#        }#}
+{##}
+{#        legend {#}
+{#            font-weight: bold;#}
+{#            color: #333;#}
+{#        }#}
+{##}
+{#        input[type="submit"] {#}
+{#            padding: 10px 20px;#}
+{#            background-color: #007bff;#}
+{#            color: #fff;#}
+{#            border: none;#}
+{#            border-radius: 4px;#}
+{#            cursor: pointer;#}
+{#            font-size: 16px;#}
+{#        }#}
+{##}
+{#        input[type="submit"]:hover {#}
+{#            background-color: #0056b3;#}
+{#        }#}
+{##}
+{#        input[type="checkbox"] {#}
+{#            margin-right: 5px;#}
+{#        }#}
+{#    </style>#}
+{#</head>#}
+{#<body>#}
+{##}
+{#<div class="container">#}
+{#    <h1>Crypto Exchange Landing Page</h1>#}
+{##}
+{#    <div class="fear-greed-index">#}
+{#        <h2>Fear & Greed Index</h2>#}
+{#        {% if fear_greed_index %}#}
+{#            <p>{{ fear_greed_index }}</p>#}
+{#        {% else %}#}
+{#            <p>No data available</p>#}
+{#        {% endif %}#}
+{#    </div>#}
+{##}
+{#    <div class="trending-section">#}
+{#        <h2>Trending Cryptocurrencies</h2>#}
+{#        <ul>#}
+{#            {% for crypto in trending_cryptos %}#}
+{#                <li>#}
+{#                    {{ crypto.name }} ({{ crypto.symbol }}):#}
+{#                    ${{ crypto.current_price|floatformat:2 }} <!-- Display current price -->#}
+{#                    {% if crypto.fluctuation_percentage is not None %}#}
+{#                        {% if crypto.fluctuation_percentage > 0 %}#}
+{#                            <span style="color: green;">({{ crypto.fluctuation_percentage|floatformat:2 }}% &#8593;)</span>#}
+{#                        {% elif crypto.fluctuation_percentage < 0 %}#}
+{#                            <span style="color: red;">({{ crypto.fluctuation_percentage|floatformat:2 }}% &#8595;)</span>#}
+{#                        {% else %}#}
+{#                            <span>({{ crypto.fluctuation_percentage|floatformat:2 }}%)</span>#}
+{#                        {% endif %}#}
+{#                    {% endif %}#}
+{#                </li>#}
+{#            {% endfor %}#}
+{#        </ul>#}
+{#    </div>#}
+{##}
+{#    <div class="community-posts">#}
+{#        <h2>Community Posts/News</h2>#}
+{#        <ul>#}
+{#            {% for post in community_posts %}#}
+{#                <li>#}
+{#                    <strong>{{ post.title }}</strong> by {{ post.author }}<br>#}
+{#                    {{ post.content }}#}
+{#                </li>#}
+{#            {% endfor %}#}
+{#        </ul>#}
+{#    </div>#}
+{##}
+{#    <h1>Select Fields to Display</h1>#}
+{##}
+{#    <form method="post">#}
+{#        {% csrf_token %}#}
+{#        <fieldset>#}
+{#            <legend>Fields:</legend>#}
+{#            <label><input type="checkbox" name="field_selection" value="name"> Name</label><br>#}
+{#            <label><input type="checkbox" name="field_selection" value="price"> Price</label><br>#}
+{#            <label><input type="checkbox" name="field_selection" value="high"> High (24h)</label><br>#}
+{#            <label><input type="checkbox" name="field_selection" value="low"> Low (24h)</label><br>#}
+{#            <label><input type="checkbox" name="field_selection" value="price_change_24h"> Price Change (24h)</label><br>#}
+{#            <label><input type="checkbox" name="field_selection" value="price_change_percentage_24h"> Price Change (%) (24h)</label><br>#}
+{#            <label><input type="checkbox" name="field_selection" value="market_cap"> Market Cap</label><br>#}
+{#            <label><input type="checkbox" name="field_selection" value="volume_24h"> Volume (24h)</label><br>#}
+{#            <label><input type="checkbox" name="field_selection" value="circulating_supply"> Circulating Supply</label><br>#}
+{#        </fieldset>#}
+{#        <input type="submit" value="Display Selected Fields">#}
+{#    </form>#}
+{#</div>#}
+{##}
+{#</body>#}
+{#</html>#}

@@ -29,6 +29,9 @@ def signup(request):
         form = SignUpForm()
     return render(request, 'sigup.html', {'form': form})
 
+def base(request):
+
+    return render(request, 'base.html')
 
 def user_login(request):
     if request.method == 'POST':
@@ -229,7 +232,6 @@ def landing_page(request):
         'form': form
         # Other context data
     }
-<<<<<<< HEAD
 
     return render(request, 'landingpage.html', context)
 
@@ -305,6 +307,6 @@ def crypto_assets(request):
         'crypto_assets': assets,
     }
     return render(request, 'crypto_assets.html', context)
-=======
-    return render(request, 'base.html', context)
->>>>>>> origin/rujuta
+
+    # return render(request, 'base.html', context)
+

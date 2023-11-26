@@ -16,7 +16,7 @@ class HistoricalPrice(models.Model):
 
     def __str__(self):
         return self.username
-<<<<<<< HEAD
+
 class CryptoAsset(models.Model):
     name = models.CharField(max_length=100)
     price = models.DecimalField(max_digits=20, decimal_places=5)
@@ -39,7 +39,7 @@ class Post(models.Model):
     title = models.CharField(max_length=200)
     content = models.TextField()
     author = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
-=======
+
 
 class Coin(models.Model):
     name = models.CharField(max_length=100)
@@ -48,4 +48,4 @@ class Coin(models.Model):
     market_cap = models.DecimalField(max_digits=15, decimal_places=2)
     volume_24h = models.DecimalField(max_digits=15, decimal_places=2)
     change_24h = models.DecimalField(max_digits=5, decimal_places=2)
->>>>>>> origin/rujuta
+
