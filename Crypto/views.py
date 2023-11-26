@@ -188,23 +188,42 @@ def crypto_assets(request):
             if all(key in item for key in ['name', 'current_price', 'high_24h', 'low_24h',
                                            'price_change_24h', 'price_change_percentage_24h',
                                            'market_cap', 'total_volume', 'circulating_supply']):
-                asset = CryptoAsset(
-                    name=item['name'],
-                    price=item['current_price'],
-                    high=item['high_24h'],
-                    low=item['low_24h'],
-                    price_change_24h=item['price_change_24h'],
-                    price_change_percentage_24h=item['price_change_percentage_24h'],
-                    market_cap=item['market_cap'],
-                    volume_24h=item['total_volume'],
-                    circulating_supply=item['circulating_supply'],
-                    # icon_url=item['image']
-                )
+                # Check if the cryptocurrency already exists in the database
+                existing_asset = CryptoAsset.objects.filter(name=item['name']).first()
 
-                crypto_assets.append(asset)
+                if existing_asset:
+                    # Update existing data
+                    existing_asset.price = item['current_price']
+                    existing_asset.high = item['high_24h']
+                    existing_asset.low = item['low_24h']
+                    existing_asset.price_change_24h = item['price_change_24h']
+                    existing_asset.price_change_percentage_24h = item['price_change_percentage_24h']
+                    existing_asset.market_cap = item['market_cap']
+                    existing_asset.volume_24h = item['total_volume']
+                    existing_asset.circulating_supply = item['circulating_supply']
+                    # Update other fields as needed
 
-        # Saving fetched data into the database
-        CryptoAsset.objects.bulk_create(crypto_assets)
+                    existing_asset.save()
+                else:
+                    # Create a new cryptocurrency asset
+                    asset = CryptoAsset(
+                        name=item['name'],
+                        price=item['current_price'],
+                        high=item['high_24h'],
+                        low=item['low_24h'],
+                        price_change_24h=item['price_change_24h'],
+                        price_change_percentage_24h=item['price_change_percentage_24h'],
+                        market_cap=item['market_cap'],
+                        volume_24h=item['total_volume'],
+                        circulating_supply=item['circulating_supply'],
+                        # Add other fields if necessary
+                    )
+
+                    crypto_assets.append(asset)
+
+        # Bulk create new assets if any
+        if crypto_assets:
+            CryptoAsset.objects.bulk_create(crypto_assets)
 
         # Retrieving data from the database
         assets = CryptoAsset.objects.all()
