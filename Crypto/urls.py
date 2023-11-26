@@ -3,7 +3,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from . import views
 # from CryptoCrackers import views
-from .views import signup, user_login, index
+from .views import signup, user_login, index, watchlist
 
 app_name = 'CoinCraft'
 
@@ -12,7 +12,11 @@ urlpatterns = [
     path('login/', views.user_login, name='login'),
     path('signup/', views.signup, name='signup'),
     path('portfolio/', views.portfolio, name='portfolio'),
+<<<<<<< HEAD
     path('crypto_assets/', views.crypto_assets, name='crypto_assets'),
+=======
+    path('watchlist/', views.watchlist, name='watchlist'),
+>>>>>>> origin/rujuta
 
 ]
 
