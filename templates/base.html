@@ -37,6 +37,9 @@
           <div class="flex gap-x-12">
             <a href="#" class="text-sm font-semibold leading-6 text-gray-900">Saved</a>
             <a href="#" class="text-sm font-semibold leading-6 text-gray-900">History</a>
+            <button onclick="toggleCurrencyConverter()" class="text-sm font-semibold leading-6 text-gray-900 focus:outline-none">
+              Currency Convert
+          </button>
             <a href="#" class="text-sm font-semibold leading-6 text-gray-900">
               <span class=" inline-flex align-items justify-center">
 
@@ -58,5 +61,60 @@
     <!-- <div id="footer">
         <p>{% block footer %}© 2023 My Site{% endblock %}</p>
     </div> -->
+
+    <section id="currency-toggle" class="hidden">
+      <div id="currency-modal" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
+          <div class="bg-white p-8 w-96">
+              <h2 class="text-xl font-semibold mb-4">Currency Selection</h2>
+              <label for="currency-select">Select Currency:</label>
+              <select id="currency-select" onchange="updateCurrency()">
+                  <option value="usd">USD</option>
+                  <option value="cad">CAD</option>
+                  <!-- Add more currency options as needed -->
+                  <option value="eur">EUR</option>
+                  <option value="gbp">GBP</option>
+              </select>
+              <button onclick="closeCurrencyModal()" class="mt-4 bg-blue-500 text-white px-4 py-2">Close</button>
+          </div>
+      </div>
+  </section>
+
+  <div id="result-modal" class="hidden fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
+    <div class="bg-white p-8 w-96">
+        <div id="result-content"></div>
+    </div>
+</div>
+  
 </body>
 </html>
+<script>
+   document.addEventListener('DOMContentLoaded', function () {
+      var currencyToggle = document.getElementById("currency-toggle");
+      currencyToggle.classList.add("hidden");
+  });
+
+  // Modify the function to toggle the currency converter visibility
+  function toggleCurrencyConverter() {
+      var currencyToggle = document.getElementById("currency-toggle");
+      currencyToggle.classList.toggle("hidden");
+  }
+
+  function closeCurrencyModal() {
+        var currencyModal = document.getElementById("currency-modal");
+        currencyModal.classList.add("hidden");
+    }
+
+     // Retrieve the selected value from the dropdown
+     var selectedCurrency = document.getElementById("currency-select").value;
+
+// Display the selected value in a custom modal
+var resultModal = document.getElementById("result-modal");
+resultModal.innerHTML = "Selected Currency: " + selectedCurrency;
+resultModal.classList.remove("hidden");
+
+// Close the result modal after 10 seconds
+setTimeout(function () {
+    resultModal.classList.add("hidden");
+}, 10000);
+  
+</script>
