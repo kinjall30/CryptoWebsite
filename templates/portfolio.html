@@ -1,87 +1,62 @@
-{% extends 'base.html' %}
 {% load static %}
-{% block page_heading %}Portfolio{% endblock %}
-{% block css %}
-    <link rel="stylesheet" href="{% static 'profile.css' %}">
-{% endblock %}
-{% block script %}
-    function toggleSection(sectionId) {
-            var sections = ["Overview", "my-portfolio"];
-            console.log(sectionId)
-            sections.forEach(function (section) {
-                var element = document.getElementById(section);
-                if (section === sectionId) {
-                    element.style.display = "block";
-                } else {
-                    element.style.display = "none";
-                }
-            });
+<!-- base.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}My Site{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+          theme: {
+            container: {
+                center: true
+              },
+            extend: {
+              colors: {
+                clifford: '#da373d',
+              }
+            }
+          }
         }
+      </script>
+</head>
+<body>
+    <!-- <h1 class="text-3xl font-bold underline text-clifford">
+        Hello world!
+      </h1> -->
+      <header class="bg-white shadow-md">
+        <nav class="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8" aria-label="Global">
+          <div class="flex lg:flex-1">
+            <a href="#" class="-m-1.5 p-1.5 flex items-center">
+              <img class="h-10 w-auto" src="{% static 'logo.png' %}" alt="">
+              <span class="font-semibold">CryptoBase</span>
+            </a>
+          </div>
+          <div class="flex gap-x-12">
+            <a href="#" class="text-sm font-semibold leading-6 text-gray-900">Saved</a>
+            <a href="#" class="text-sm font-semibold leading-6 text-gray-900">History</a>
+            <a href="#" class="text-sm font-semibold leading-6 text-gray-900">
+              <span class=" inline-flex align-items justify-center">
 
-        function redirectToWishlist() {
-        toggleSection('wishlist');
-         }
- {% endblock %}
-{% block body_block %}
-    <div class="row">
-      <div class="column left" style="background-color:#aaa;">
-        <h2>Column 1</h2>
-         <ul>
-            <li><a class="sidebar" href="javascript:void(0);" onclick="toggleSection('Overview')"><div><h3>Overview</h3><p>$45,679</p></div></a></li>
-            <li><a class="sidebar" href="javascript:void(0);" onclick="toggleSection('my-portfolio')">My Portfolio</a></li>
-         </ul>
-      </div>
-      <div class="column right" >
-        <p>Kinjal</p><h4>$45678</h4>
-          <section class="about" id="My Projects">
-            <div class="content">
+                <span class="mr-2">Profile</span>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                </svg>
+              </span>
+            </a>
+          </div>
+        </nav>
 
-                <div class="boxes">
-                    <div class="box">
-                        <div class="topic">
-                            <a href="" target="_blank">
-                                Best Performer
-                            </a>
-                        </div>
-                        <p>
-                            BTC
-                        </p>
-                    </div>
-                    <div class="box">
-                        <div class="topic">
-                            <a href="" target="_blank">
-                               Worst Performer
-                            </a>
-                        </div>
-                        <p>
-                            UNI
-                        </p>
-                    </div>
-                </div>
-            </div>
-          </section>
 
-          <section>
-              <h5>My Assests</h5>
-              <table>
-                  <tr>
-                      <th>Name</th>
-                      <th>Price</th>
-                      <th>Holdings</th>
-                  </tr>
-                  <tr>
-                      <td>BTC</td>
-                      <td>$97987</td>
-                      <td>$10450</td>
-                  </tr>
-                  <tr>
-                      <td>Uniswap</td>
-                      <td>$689795</td>
-                      <td>$15750</td>
-                  </tr>
-                </table>
-          </section>
-      </div>
+      </header>
+
+    <div id="content" class="container">
+        {% block content %}{% endblock %}
     </div>
-{% endblock %}
-
+    <!-- <div id="footer">
+        <p>{% block footer %}© 2023 My Site{% endblock %}</p>
+    </div> -->
+</body>
+</html>
