@@ -215,16 +215,3 @@ def crypto_assets(request):
         'crypto_assets': assets,
     }
     return render(request, 'crypto_assets.html', context)
-
-
-def user_posts(request, user_id):
-    # This will fetch the user id from url
-    user = get_object_or_404(UserProfile, user_id=user_id)
-
-    # This will fetch all the post
-    posts = Post.objects.filter(author=user)
-
-    return render(request, 'user_posts.html', {
-        'user_posts': posts,
-        'user_profile': user
-    })
