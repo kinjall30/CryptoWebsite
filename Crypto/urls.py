@@ -5,7 +5,7 @@ from . import views
 # from CryptoCrackers import views
 from .views import signup, user_login, index, watchlist
 
-app_name = 'CoinCraft'
+app_name = 'Crypto'
 
 urlpatterns = [
     path('', views.landing_page, name='index'),
@@ -15,7 +15,7 @@ urlpatterns = [
     path('crypto_assets/', views.crypto_assets, name='crypto_assets'),
     path('watchlist/', views.watchlist, name='watchlist'),
     path('base/', views.base, name='base'),
-
+    path('profile/', views.user_profile, name='user_profile')
 
 ]
 

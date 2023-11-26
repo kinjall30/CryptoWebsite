@@ -62,7 +62,11 @@
 <body style="font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f5f5f5;">
 
     <h1 style="text-align: center; padding: 20px; color: #333;">Selected Fields</h1>
-
+    <form action= "{% url 'Crypto:crypto_assets' %}" method="post">
+    {% csrf_token %}
+    <input type="submit" name="fetch_new_data" value="Fetch New Data from API">
+    <label for="fetch_new_data"></label>
+</form>
     <table id="cryptoTable" border="0" cellspacing="0" cellpadding="8" style="width: 80%; margin: 20px auto; border-collapse: separate; border-spacing: 0; border: 1px solid #ddd; border-radius: 5px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); overflow: hidden;">
         <thead style="background-color: #f2f2f2;">
             <tr>

@@ -30,3 +30,8 @@ class FieldSelectionForm(forms.Form):
         widget=forms.CheckboxSelectMultiple,
         choices=fields_choices,
     )
+
+class UserProfileForm(forms.ModelForm):
+    class Meta:
+        model = UserDetails
+        fields = ['username', 'email', 'password', 'first_name', 'last_name', 'date_of_birth']
