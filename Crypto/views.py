@@ -14,6 +14,8 @@ from django.core.exceptions import ObjectDoesNotExist  # Import the exception
 import praw
 from .models import CryptoAsset
 from .forms import FieldSelectionForm
+from .models import UserProfile, Post
+from django.shortcuts import get_object_or_404
 
 def signup(request):
     if request.method == 'POST':
@@ -164,7 +166,7 @@ def landing_page(request):
 def crypto_assets(request):
     # API endpoint to fetch cryptocurrency data (replace with actual API endpoint)
     api_url = 'https://api.coingecko.com/api/v3/coins/markets'
-
+    # CryptoAsset.objects.all().delete()
     # Parameters for the API request
     params = {
         'vs_currency': 'usd',
@@ -214,3 +216,15 @@ def crypto_assets(request):
     }
     return render(request, 'crypto_assets.html', context)
 
+
+def user_posts(request, user_id):
+    # This will fetch the user id from url
+    user = get_object_or_404(UserProfile, user_id=user_id)
+
+    # This will fetch all the post
+    posts = Post.objects.filter(author=user)
+
+    return render(request, 'user_posts.html', {
+        'user_posts': posts,
+        'user_profile': user
+    })

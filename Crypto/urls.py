@@ -12,8 +12,8 @@ urlpatterns = [
     path('login/', views.user_login, name='login'),
     path('signup/', views.signup, name='signup'),
     path('portfolio/', views.portfolio, name='portfolio'),
-    path('crypto_assets/', views.crypto_assets, name='crypto_assets')
-
+    path('crypto_assets/', views.crypto_assets, name='crypto_assets'),
+    path('user_posts/<int:user_id>/', views.user_posts, name='user_posts')
 ]
 
 if settings.DEBUG:
