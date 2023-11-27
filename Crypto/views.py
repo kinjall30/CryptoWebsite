@@ -19,6 +19,7 @@ from .models import CryptoAsset, TrendingCrypto
 from .forms import FieldSelectionForm, UserProfileForm, IdentityUploadForm
 from .models import UserProfile, Post
 from django.shortcuts import get_object_or_404
+from django.http import JsonResponse
 
 
 def signup(request):
@@ -34,9 +35,10 @@ def signup(request):
         form = SignUpForm()
     return render(request, 'sigup.html', {'form': form})
 
-def base(request):
 
+def base(request):
     return render(request, 'base.html')
+
 
 def user_login(request):
     if request.method == 'POST':
@@ -61,11 +63,14 @@ def user_login(request):
         form = LoginForm()
     return render(request, 'login.html', {'form': form})
 
+
 def index(request):
     return render(request, 'landingpage.html')
 
+
 def portfolio(request):
     return render(request, 'portfolio.html')
+
 
 def watchlist(request):
     try:
@@ -92,15 +97,15 @@ def watchlist(request):
             try:
                 # Check if 'id' is a valid numerical value
                 coin = {
-            'name': coin_data['name'],
-            "price": coin_data["current_price"],
-            "symbol": coin_data["symbol"],
-            "market_cap": coin_data["market_cap"],
-            "volume_24h": coin_data["total_volume"],
-            "change_24h": coin_data["price_change_percentage_24h"] 
-        }
+                    'name': coin_data['name'],
+                    "price": coin_data["current_price"],
+                    "symbol": coin_data["symbol"],
+                    "market_cap": coin_data["market_cap"],
+                    "volume_24h": coin_data["total_volume"],
+                    "change_24h": coin_data["price_change_percentage_24h"]
+                }
                 coins.append(coin)
-                
+
             except ValueError:
                 # Skip entries with invalid 'id'
                 continue
@@ -120,13 +125,12 @@ def watchlist(request):
         # Retrieve the data from the database
         # coins = Coin.objects.all()
 
-                    #         <td>{{ coin.name }}</td>
-                    # <td>{{ coin.symbol }}</td>
-                    # <td>${{ coin.price|floatformat:2 }}</td>
-                    # <td>${{ coin.market_cap|floatformat:2 }}</td>
-                    # <td>${{ coin.volume_24h|floatformat:2 }}</td>
-                    # <td>{{ coin.change_24h|floatformat:2 }}%</td>
-        
+        #         <td>{{ coin.name }}</td>
+        # <td>{{ coin.symbol }}</td>
+        # <td>${{ coin.price|floatformat:2 }}</td>
+        # <td>${{ coin.market_cap|floatformat:2 }}</td>
+        # <td>${{ coin.volume_24h|floatformat:2 }}</td>
+        # <td>{{ coin.change_24h|floatformat:2 }}%</td>
 
         print(coins, "--------------rrrrrrrrrrrrrrr")
         return render(request, 'watchlist.html', {'coins': coins, 'tapan': "hello"})
@@ -135,6 +139,7 @@ def watchlist(request):
         print(f"Error fetching data from CoinGecko API: {e}")
         # Return a generic error response
         return HttpResponseServerError("Internal Server Error: Unable to fetch data from CoinGecko API.")
+
 
 def fetch_fear_greed_index():
     # CNN Fear & Greed Index API endpoint
@@ -158,6 +163,7 @@ def fetch_fear_greed_index():
 
     return index_value
 
+
 def fetch_community_posts():
     # Reddit API credentials (you need to get your own credentials by creating a Reddit app)
     reddit = praw.Reddit(client_id='N3GF_LZQ4KasM5vupgz9Vg',
@@ -175,6 +181,7 @@ def fetch_community_posts():
         })
     return community_posts
 
+
 def fetch_trending_cryptos_from_api():
     crypto_api_url = 'https://api.coingecko.com/api/v3/coins/markets'
     params = {
@@ -189,6 +196,7 @@ def fetch_trending_cryptos_from_api():
     if response.status_code == 200:
         return response.json()
     return []
+
 
 def landing_page(request):
     trending_cryptos = TrendingCrypto.objects.all()[:5]  # Fetch top 5 cryptocurrencies from local database
@@ -309,7 +317,7 @@ def crypto_assets(request):
                 assets = CryptoAsset.objects.all()
             else:
                 assets = CryptoAsset.objects.all()  # Fallback to database if API fails
-            #return HttpResponseRedirect('/crypto_assets/')
+            # return HttpResponseRedirect('/crypto_assets/')
             return redirect("CryptoCrackers:index")
     # Retrieve data from the database
     assets = CryptoAsset.objects.all()
@@ -319,6 +327,7 @@ def crypto_assets(request):
     return render(request, 'crypto_assets.html', context)
 
     # return render(request, 'base.html', context)
+
 
 def user_profile(request):
     user_id = request.session.get('user_id')
@@ -338,3 +347,19 @@ def user_profile(request):
         form = UserProfileForm(instance=user)
 
     return render(request, 'user_profile.html', {'form': form, 'user': user})
+
+
+def buy(request):
+    if request.method == 'POST':
+        selected_currency = request.POST.get('currency')
+        quantity = int(request.POST.get('quantity'))
+
+        # Fetch the selected cryptocurrency details
+        crypto = CryptoAsset.objects.get(name=selected_currency)
+
+        # Calculate the total price
+        total_price = quantity * crypto.price
+
+        return render(request, 'buy.html', {'crypto_assets': CryptoAsset.objects.all(), 'total_price': total_price})
+
+    return render(request, 'buy.html', {'crypto_assets': CryptoAsset.objects.all()})

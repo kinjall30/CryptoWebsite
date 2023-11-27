@@ -15,7 +15,8 @@ urlpatterns = [
     path('crypto_assets/', views.crypto_assets, name='crypto_assets'),
     path('watchlist/', views.watchlist, name='watchlist'),
     path('base/', views.base, name='base'),
-    path('profile/', views.user_profile, name='user_profile')
+    path('profile/', views.user_profile, name='user_profile'),
+    path('buy/', views.buy, name='buy')
 
 ]
 
