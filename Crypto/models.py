@@ -4,10 +4,24 @@ from django.contrib.auth.models import User
 class UserDetails(models.Model):
     username = models.CharField(max_length=255, unique=True)
     email = models.EmailField(max_length=255, unique=True)
-    password = models.CharField(max_length=255,null=True, blank=True)
-    first_name = models.CharField(max_length=255, null = True, blank=True)
-    last_name = models.CharField(max_length=255, null = True, blank=True)
-    date_of_birth = models.DateField(blank=True, null = True)
+    password = models.CharField(max_length=255, null=True, blank=True)
+    first_name = models.CharField(max_length=255, null=True, blank=True)
+    last_name = models.CharField(max_length=255, null=True, blank=True)
+    date_of_birth = models.DateField(blank=True, null=True)
+    identity_uploaded = models.BooleanField(default=False)  # New field for identity upload status
+    identity = models.FileField(upload_to='user_identities/', blank=True, null=True)  # New field for identity file upload
+
+    def __str__(self):
+        return self.username
+
+class UserIdentity(models.Model):
+    user = models.OneToOneField(UserDetails, on_delete=models.CASCADE)
+    identity_uploaded = models.BooleanField(default=False)
+    identity_photo = models.ImageField(upload_to='identity_photos/', blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.user.username} - Identity Uploaded: {self.identity_uploaded}"
+
 
 class HistoricalPrice(models.Model):
     cryptocurrency = models.CharField(max_length=100)

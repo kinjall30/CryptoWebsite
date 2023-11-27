@@ -16,15 +16,19 @@ from datetime import date, timedelta
 from django.core.exceptions import ObjectDoesNotExist  # Import the exception
 import praw
 from .models import CryptoAsset, TrendingCrypto
-from .forms import FieldSelectionForm, UserProfileForm
+from .forms import FieldSelectionForm, UserProfileForm, IdentityUploadForm
 from .models import UserProfile, Post
 from django.shortcuts import get_object_or_404
 
+
 def signup(request):
     if request.method == 'POST':
-        form = SignUpForm(request.POST)
+        form = SignUpForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
+            user = form.save(commit=False)
+            if 'identity' in request.FILES:  # Check if identity file is uploaded
+                user.identity_uploaded = True
+            user.save()
             return redirect('CryptoCrackers:login')
     else:
         form = SignUpForm()
