@@ -18,8 +18,6 @@ urlpatterns = [
     path('profile/', views.user_profile, name='user_profile'),
     path('buy/', views.buy, name='buy'),
     path('sell/', views.sell, name='sell'),
-
-
 ]
 
 if settings.DEBUG:

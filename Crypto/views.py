@@ -199,12 +199,12 @@ def fetch_trending_cryptos_from_api():
 
 
 def landing_page(request):
-    trending_cryptos = TrendingCrypto.objects.all()[:5]  # Fetch top 5 cryptocurrencies from local database
+    trending_cryptos = TrendingCrypto.objects.all()[:10]  # Fetch top 10 cryptocurrencies from local database
 
     if request.method == 'POST' and 'fetch_latest_data' in request.POST:
         latest_cryptos = fetch_trending_cryptos_from_api()
 
-        # Update or create TrendingCrypto instances in the local database
+        # Update or create Trending Crypto instances in the local database
         for crypto in latest_cryptos:
             symbol = crypto['symbol'].lower()
             TrendingCrypto.objects.update_or_create(
@@ -217,31 +217,34 @@ def landing_page(request):
                 }
             )
 
-        trending_cryptos = TrendingCrypto.objects.all()[:5]  # Refresh the list from the local database
+        trending_cryptos = TrendingCrypto.objects.all()[:10]  # Refresh the list from the local database
 
     community_posts = fetch_community_posts()
 
     fear_greed_index = fetch_fear_greed_index()
     form = FieldSelectionForm(request.POST or None)
 
+    defaultList = ['name', 'high', 'low', 'price_change_24h', 'price_change_percentage_24h', 'market_cap', 'volume_24h', 'circulating_supply']
+    assets = CryptoAsset.objects.values(*defaultList)
+   
     if request.method == 'POST' and form.is_valid():
         selected_fields = form.cleaned_data['field_selection']
 
         # Retrieve only selected fields from the database
         assets = CryptoAsset.objects.values(*selected_fields)
+      
 
-        context = {
-            'form': form,
-            'assets': assets,
-        }
-        return render(request, 'display_selected_fields.html', context)
+        # context = {
+        #     'form': form,
+        #     'assets': assets,
+        # }
 
     context = {
         'trending_cryptos': trending_cryptos,
         'community_posts': community_posts,
         'fear_greed_index': fear_greed_index,
-        'form': form
-        # Other context data
+        'form': form,
+        'assets': assets
     }
 
     return render(request, 'landingpage.html', context)
@@ -251,11 +254,8 @@ def crypto_assets(request):
     if request.method == 'POST':
         fetch_new_data = request.POST.get('fetch_new_data')
         if fetch_new_data:
-            print("New Data--------------------------------------------------------")
             # API endpoint to fetch cryptocurrency data (replace with actual API endpoint)
             api_url = 'https://api.coingecko.com/api/v3/coins/markets'
-            # CryptoAsset.objects.all().delete()
-            # Parameters for the API request
             params = {
                 'vs_currency': 'usd',
                 'order': 'market_cap_desc',
