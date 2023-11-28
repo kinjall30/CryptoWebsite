@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Crypto Assets Table</title>
+</head>
+<body>
+    <h1>Crypto Assets Table</h1>
+
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Price</th>
+                <th>High (24h)</th>
+                <th>Low (24h)</th>
+                <th>Price Change (24h)</th>
+                <th>Price Change (%) (24h)</th>
+                <th>Market Cap</th>
+                <th>Volume (24h)</th>
+                <th>Circulating Supply</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for asset in crypto_assets %}
+                <tr>
+                    <td>{{ asset.name }}</td>
+                    <td>{{ asset.price }}</td>
+                    <td>{{ asset.high }}</td>
+                    <td>{{ asset.low }}</td>
+                    <td>{{ asset.price_change_24h }}</td>
+                    <td>{{ asset.price_change_percentage_24h }}</td>
+                    <td>{{ asset.market_cap }}</td>
+                    <td>{{ asset.volume_24h }}</td>
+                    <td>{{ asset.circulating_supply }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

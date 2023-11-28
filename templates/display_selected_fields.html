@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Display Selected Fields</title>
+    <script>
+        function sortTable(n) {
+            var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+            table = document.getElementById("cryptoTable");
+            switching = true;
+            dir = "asc";
+            var button = document.getElementById("btn-" + n);
+
+            if (button.getAttribute("data-dir") === "asc") {
+                dir = "desc";
+                button.setAttribute("data-dir", "desc");
+                button.innerHTML = "&#8595;";
+            } else {
+                dir = "asc";
+                button.setAttribute("data-dir", "asc");
+                button.innerHTML = "&#8593;";
+            }
+
+            while (switching) {
+                switching = false;
+                rows = table.rows;
+
+                for (i = 1; i < (rows.length - 1); i++) {
+                    shouldSwitch = false;
+
+                    x = rows[i].getElementsByTagName("td")[n];
+                    y = rows[i + 1].getElementsByTagName("td")[n];
+
+                    var cmpX = isNaN(parseFloat(x.innerHTML.replace(/[^0-9.-]+/g,""))) ? x.innerHTML.toLowerCase() : parseFloat(x.innerHTML.replace(/[^0-9.-]+/g,""));
+                    var cmpY = isNaN(parseFloat(y.innerHTML.replace(/[^0-9.-]+/g,""))) ? y.innerHTML.toLowerCase() : parseFloat(y.innerHTML.replace(/[^0-9.-]+/g,""));
+
+                    if (dir === "asc") {
+                        if (cmpX > cmpY) {
+                            shouldSwitch = true;
+                            break;
+                        }
+                    } else if (dir === "desc") {
+                        if (cmpX < cmpY) {
+                            shouldSwitch = true;
+                            break;
+                        }
+                    }
+                }
+                if (shouldSwitch) {
+                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                    switching = true;
+                    switchcount++;
+                } else {
+                    if (switchcount === 0 && dir === "asc") {
+                        dir = "desc";
+                        switching = true;
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body style="font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f5f5f5;">
+
+    <h1 style="text-align: center; padding: 20px; color: #333;">Selected Fields</h1>
+    <form action= "{% url 'CoinCraft:crypto_assets' %}" method="post">
+    {% csrf_token %}
+    <input type="submit" name="fetch_new_data" value="Fetch New Data from API">
+    <label for="fetch_new_data"></label>
+</form>
+    <table id="cryptoTable" border="0" cellspacing="0" cellpadding="8" style="width: 80%; margin: 20px auto; border-collapse: separate; border-spacing: 0; border: 1px solid #ddd; border-radius: 5px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); overflow: hidden;">
+        <thead style="background-color: #f2f2f2;">
+            <tr>
+                {% for field_name in assets.0.keys %}
+                    {% if field_name == 'price' or field_name == 'price_change_24h' or field_name == 'price_change_percentage_24h' or field_name == 'market_cap' or field_name == 'volume_24h' %}
+                        <th style="padding: 12px; text-align: left; border-bottom: 1px solid #ddd;">
+                            {{ field_name }}
+                            <button id="btn-{{ forloop.counter0 }}" onclick="sortTable({{ forloop.counter0 }})" data-dir="asc">&#8593;</button>
+                        </th>
+                    {% else %}
+                        <th style="padding: 12px; text-align: left; border-bottom: 1px solid #ddd;">{{ field_name }}</th>
+                    {% endif %}
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for asset in assets %}
+                <tr style="background-color: #fff;">
+                    {% for field_name, field_value in asset.items %}
+                        {% if field_name == 'price' or field_name == 'price_change_24h' or field_name == 'price_change_percentage_24h' or field_name == 'market_cap' or field_name == 'volume_24h' %}
+                            {% if field_name == 'price_change_24h' or field_name == 'price_change_percentage_24h' %}
+                                {% if field_value > 0 %}
+                                    <td style="padding: 12px; text-align: left; border-bottom: 1px solid #ddd; color: green;">{{ field_value }}</td>
+                                {% elif field_value < 0 %}
+                                    <td style="padding: 12px; text-align: left; border-bottom: 1px solid #ddd; color: red;">{{ field_value }}</td>
+                                {% else %}
+                                    <td style="padding: 12px; text-align: left; border-bottom: 1px solid #ddd;">{{ field_value }}</td>
+                                {% endif %}
+                            {% else %}
+                                <td style="padding: 12px; text-align: left; border-bottom: 1px solid #ddd;">{{ field_value }}</td>
+                            {% endif %}
+                        {% else %}
+                            <td style="padding: 12px; text-align: left; border-bottom: 1px solid #ddd;">{{ field_value }}</td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</body>
+</html>

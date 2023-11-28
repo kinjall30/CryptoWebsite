@@ -1,0 +1,131 @@
+{% load static %}
+<!-- base.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}My Site{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+          theme: {
+            container: {
+                center: true
+              },
+            extend: {
+              colors: {
+                clifford: '#da373d',
+              }
+            }
+          }
+        }
+      </script>
+</head>
+<body>
+    <!-- <h1 class="text-3xl font-bold underline text-clifford">
+        Hello world!
+      </h1> -->
+      <header class="bg-white shadow-md">
+        <nav class="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8" aria-label="Global">
+          <div class="flex lg:flex-1">
+            <a href="#" class="-m-1.5 p-1.5 flex items-center">
+              <img class="h-10 w-auto" src="{% static 'logo.png' %}" alt="">
+              <span class="font-semibold">CryptoBase</span>
+            </a>
+          </div>
+          <div class="flex gap-x-12">
+
+            {% if request.session.user_id %}
+                <a href="#" class="text-sm font-semibold leading-6 text-gray-900">Saved</a>
+                <a href="#" class="text-sm font-semibold leading-6 text-gray-900">History</a>
+                  <a href="{% url 'CryptoCrackers:buy' %}" class="text-sm font-semibold leading-6 text-gray-900">Buy</a>
+                <button onclick="toggleCurrencyConverter()" class="text-sm font-semibold leading-6 text-gray-900 focus:outline-none">
+                  Currency Convert
+                </button>
+                <a href="{% url 'CryptoCrackers:user_profile' %}" class="text-sm font-semibold leading-6 text-gray-900">
+                  <span class=" inline-flex align-items justify-center">
+
+                    <span class="mr-2">Profile</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                    </svg>
+                  </span>
+                </a>
+                  <a href="{% url 'CryptoCrackers:logout' %}" class="text-sm font-semibold leading-6 text-gray-900">Log Out</a>
+            {% else %}
+                <button onclick="toggleCurrencyConverter()" class="text-sm font-semibold leading-6 text-gray-900 focus:outline-none">
+                  Currency Convert
+                </button>
+                <a href="{% url 'CryptoCrackers:signup' %}" class="text-sm font-semibold leading-6 text-gray-900">Sign Up</a>
+                <a href="{% url 'CryptoCrackers:login' %}" class="text-sm font-semibold leading-6 text-gray-900">Log In</a>
+            {% endif %}
+          </div>
+        </nav>
+       
+        
+      </header>
+
+    <div id="content" class="container">
+        {% block content %}{% endblock %}
+    </div>
+    <!-- <div id="footer">
+        <p>{% block footer %}© 2023 My Site{% endblock %}</p>
+    </div> -->
+
+    <section id="currency-toggle" class="hidden">
+      <div id="currency-modal" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
+          <div class="bg-white p-8 w-96">
+              <h2 class="text-xl font-semibold mb-4">Currency Selection</h2>
+              <label for="currency-select">Select Currency:</label>
+              <select id="currency-select" onchange="updateCurrency()">
+                  <option value="usd">USD</option>
+                  <option value="cad">CAD</option>
+                  <!-- Add more currency options as needed -->
+                  <option value="eur">EUR</option>
+                  <option value="gbp">GBP</option>
+              </select>
+              <button onclick="closeCurrencyModal()" class="mt-4 bg-blue-500 text-white px-4 py-2">Close</button>
+          </div>
+      </div>
+  </section>
+
+  <div id="result-modal" class="hidden fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
+    <div class="bg-white p-8 w-96">
+        <div id="result-content"></div>
+    </div>
+</div>
+  
+</body>
+</html>
+<script>
+   document.addEventListener('DOMContentLoaded', function () {
+      var currencyToggle = document.getElementById("currency-toggle");
+      currencyToggle.classList.add("hidden");
+  });
+
+  // Modify the function to toggle the currency converter visibility
+  function toggleCurrencyConverter() {
+      var currencyToggle = document.getElementById("currency-toggle");
+      currencyToggle.classList.toggle("hidden");
+  }
+
+  function closeCurrencyModal() {
+        var currencyModal = document.getElementById("currency-modal");
+        currencyModal.classList.add("hidden");
+    }
+
+     // Retrieve the selected value from the dropdown
+     var selectedCurrency = document.getElementById("currency-select").value;
+
+// Display the selected value in a custom modal
+var resultModal = document.getElementById("result-modal");
+resultModal.innerHTML = "Selected Currency: " + selectedCurrency;
+resultModal.classList.remove("hidden");
+
+// Close the result modal after 10 seconds
+setTimeout(function () {
+    resultModal.classList.add("hidden");
+}, 10);
+  
+</script>

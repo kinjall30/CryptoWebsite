@@ -1,0 +1,49 @@
+
+<!DOCTYPE html>
+{% load static %}
+<!-- Created By CodingNepal -->
+<html lang="en">
+   <head>
+      <meta charset="UTF-8">
+      <title>Login Form</title>
+      <link rel="stylesheet" href="{% static 'login.css' %}">
+      <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css">
+   </head>
+   <body>
+      <div class="center">
+         <div class="header">
+            Signup
+         </div>
+         <form method="post" action="{% url 'CoinCraft:signup' %}" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Sign Up</button>
+</form>iv>
+      <script>
+          document.getElementById('id_identity_photo').addEventListener('change', function() {
+        // Get the file input element
+        var input = document.getElementById('id_identity_photo');
+        // Get the hidden input element for identity_uploaded
+        var checkbox = document.getElementById('id_identity_uploaded');
+
+        // Check if a file is uploaded
+        if (input.files && input.files[0]) {
+            checkbox.value = "True"; // Set the value to True if file is uploaded
+        }
+    });
+         function show(){
+          var pswrd = document.getElementById('pswrd');
+          var icon = document.querySelector('.fas');
+          if (pswrd.type === "password") {
+           pswrd.type = "text";
+           pswrd.style.marginTop = "20px";
+           icon.style.color = "#7f2092";
+          }else{
+           pswrd.type = "password";
+           icon.style.color = "grey";
+          }
+         }
+      </script>
+   </body>
+</html>
+

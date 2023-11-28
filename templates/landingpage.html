@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% block title %}Crypto Exchange Landing Page{% endblock %}
+{% block content %}
+    <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 20px; font-family: Arial, sans-serif; background-color: #f8f8f8; color: #333;">
+        <h1 style="text-align: center; color: #444; padding: 20px; margin-bottom: 20px; border-bottom: 1px solid #ddd;">Crypto Exchange Landing Page</h1>
+
+        <div class="fear-greed-index" style="background-color: #fff; border-radius: 8px; padding: 20px; margin-bottom: 20px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+            <h2 style="color: #007bff; margin-top: 0;">Fear & Greed Index</h2>
+            {% if fear_greed_index %}
+                <p>{{ fear_greed_index }}</p>
+            {% else %}
+                <p>No data available</p>
+            {% endif %}
+        </div>
+
+        <form method="post" style="margin-bottom: 20px; text-align: center;">
+            {% csrf_token %}
+            <input type="submit" name="fetch_latest_data" value="Fetch Latest Data from API" style="padding: 10px 20px; background-color: #007bff; color: #fff; border: none; border-radius: 4px; cursor: pointer; font-size: 16px;">
+        </form>
+
+        <div class="trending-section" style="background-color: #fff; border-radius: 8px; padding: 20px; margin-bottom: 20px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+            <h2 style="color: #007bff; margin-top: 0;">Trending Cryptocurrencies</h2>
+            <ul style="list-style-type: none; padding: 0; margin: 0;">
+                {% for crypto in trending_cryptos %}
+                    <li style="padding: 10px 0; border-bottom: 1px solid #ddd; color: #666;">
+                        {{ crypto.name }} ({{ crypto.symbol }}):
+                        ${{ crypto.current_price|floatformat:2 }}
+                        {% if crypto.fluctuation_percentage is not None %}
+                            {% if crypto.fluctuation_percentage > 0 %}
+                                <span style="color: green;">({{ crypto.fluctuation_percentage|floatformat:2 }}% &#8593;)</span>
+                            {% elif crypto.fluctuation_percentage < 0 %}
+                                <span style="color: red;">({{ crypto.fluctuation_percentage|floatformat:2 }}% &#8595;)</span>
+                            {% else %}
+                                <span>({{ crypto.fluctuation_percentage|floatformat:2 }}%)</span>
+                            {% endif %}
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="community-posts" style="background-color: #fff; border-radius: 8px; padding: 20px; margin-bottom: 20px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+            <h2 style="color: #007bff; margin-top: 0;">Community Posts/News</h2>
+            <ul style="list-style-type: none; padding: 0; margin: 0;">
+                {% for post in community_posts %}
+                    <li style="padding: 10px 0; border-bottom: 1px solid #ddd; color: #444;">
+                        <strong>{{ post.title }}</strong> by {{ post.author }}<br>
+                        {{ post.content }}
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <h1 style="text-align: center; color: #444; padding: 20px; margin-bottom: 20px; border-bottom: 1px solid #ddd;">Select Fields to Display</h1>
+
+        <form method="post" style="margin: 20px; padding: 20px; border: 1px solid #ddd; border-radius: 5px; background-color: #f9f9f9; max-width: 400px;">
+            {% csrf_token %}
+            <fieldset style="margin: 10px 0; border: none;">
+                <legend style="font-weight: bold; color: #333;">Fields:</legend>
+                <label><input type="checkbox" name="field_selection" value="name"> Name</label><br>
+                <label><input type="checkbox" name="field_selection" value="price"> Price</label><br>
+                <label><input type="checkbox" name="field_selection" value="high"> High (24h)</label><br>
+                <label><input type="checkbox" name="field_selection" value="low"> Low (24h)</label><br>
+                <label><input type="checkbox" name="field_selection" value="price_change_24h"> Price Change (24h)</label><br>
+                <label><input type="checkbox" name="field_selection" value="price_change_percentage_24h"> Price Change (%) (24h)</label><br>
+                <label><input type="checkbox" name="field_selection" value="market_cap"> Market Cap</label><br>
+                <label><input type="checkbox" name="field_selection" value="volume_24h"> Volume (24h)</label><br>
+                <label><input type="checkbox" name="field_selection" value="circulating_supply"> Circulating Supply</label><br>
+            </fieldset>
+            <input type="submit" value="Display Selected Fields" style="padding: 10px 20px; background-color: #007bff; color: #fff; border: none; border-radius: 4px; cursor: pointer; font-size: 16px;">
+        </form>
+    </div>
+{% endblock %}

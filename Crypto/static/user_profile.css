@@ -1,0 +1,56 @@
+/* user_profile.css */
+
+/* Apply styles to the container */
+.new-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* Adjust the height as needed */
+}
+
+/* Apply styles to the content within the container */
+.new-content {
+  max-width: 400px; /* Adjust the max-width as needed */
+  width: 100%;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Apply styles to the form within the content */
+.new-content form {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Apply styles to the form elements */
+.new-content form input,
+.new-content form button {
+  margin-bottom: 10px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+/* Apply styles to the Save Changes button */
+.new-content form button[type="submit"] {
+  background-color: #4caf50;
+  color: white;
+  cursor: pointer;
+}
+
+.new-content form button[type="submit"]:hover {
+  background-color: #45a049;
+}
+
+/* Apply styles to the Cancel button */
+.new-content form a button[type="button"] {
+  background-color: #ccc;
+  color: black;
+  cursor: pointer;
+}
+
+.new-content form a button[type="button"]:hover {
+  background-color: #bbb;
+}

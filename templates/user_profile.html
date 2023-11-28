@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block page_heading %}
+  User Profile
+{% endblock %}
+
+{% block css %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% static 'user_profile.css' %}">
+   <style>
+    /* Add your custom styles here */
+    .form-label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 15px;
+      box-sizing: border-box;
+    }
+
+    /* Add more styles as needed */
+  </style>
+{% endblock %}
+
+{% block content %}
+  <div class="new-container">
+    <div class="new-content">
+
+      {% if user.profile_photo %}
+
+        <img src="{{ user.profile_photo.url }}" alt="Profile Photo">
+      {% else %}
+        <img src="{% static 'default.png' %}" style="max-width: 15%;" alt="Default Profile Photo">
+      {% endif %}
+      <form method="post" action="{% url 'CryptoCrackers:user_profile' %}" enctype="multipart/form-data">
+        {% csrf_token %}
+           {# Display username and email as plain text (uneditable) #}
+        <label style="display: block; margin-bottom: 5px;font-weight: bold;" for="id_username"><strong>Username:</strong></label>
+        <input style="width: 100%; padding: 8px; margin-bottom: 15px; box-sizing: border-box;" type="text" id="id_username" value="{{ form.instance.username }}" readonly>
+
+        <label for="id_email"><strong>Email:</strong></label>
+        <input type="email" id="id_email" name="email" value="{{ form.instance.email }}">
+
+        <label for="id_first_name"><strong>First Name:</strong></label>
+        <input type="text" id="id_first_name" name="first_name" value="{{ form.instance.first_name }}">
+
+        <label for="id_last_name"><strong>Last Name:</strong></label>
+        <input type="text" id="id_last_name" name="last_name" value="{{ form.instance.last_name }}">
+
+        <label for="id_password"><strong>Password: </strong></label>
+        <input type="text" id="id_password" name="password" value="{{ form.instance.password }}">
+
+
+          {# Display other editable fields using form.as_p #}
+{#            <p style="border: 1px solid #ccc; padding: 5px;"><strong>Email:</strong> {{ form.email }}</p>#}
+{#            <p><strong>First Name:</strong> {{ form.first_name }}</p>#}
+{#            <p><strong>Last Name:</strong> {{ form.last_name }}</p>#}
+{#            <p><strong>Date of Birth:</strong> {{ form.date_of_birth }}</p>#}
+
+
+        <label for="id_profile_photo">Update Image:</label>
+        <input type="file" id="id_profile_photo" name="profile_photo" accept="image/*"><br>
+
+        <button type="submit">Save Changes</button><br>
+        <a href="{% url 'CryptoCrackers:index' %}">
+          <button type="button">Cancel</button>
+        </a>
+      </form>
+    </div>
+  </div>
+{% endblock %}
