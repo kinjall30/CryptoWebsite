@@ -355,11 +355,59 @@ def buy(request):
         quantity = int(request.POST.get('quantity'))
 
         # Fetch the selected cryptocurrency details
-        crypto = CryptoAsset.objects.get(name=selected_currency)
+        crypto_assets = CryptoAsset.objects.all()
+
+        # Validate if the selected currency exists
+        if selected_currency not in [crypto.name for crypto in crypto_assets]:
+            selected_currency = None  # Set selected_currency to None if it's not valid
 
         # Calculate the total price
-        total_price = quantity * crypto.price
+        if selected_currency:
+            crypto = CryptoAsset.objects.get(name=selected_currency)
+            total_price = quantity * crypto.price
+        else:
+            total_price = None  # Set total_price to None if selected_currency is not valid
 
-        return render(request, 'buy.html', {'crypto_assets': CryptoAsset.objects.all(), 'total_price': total_price})
+        return render(request, 'buy.html', {
+            'crypto_assets': crypto_assets,
+            'selected_currency': selected_currency,
+            'total_price': total_price,
+        })
 
-    return render(request, 'buy.html', {'crypto_assets': CryptoAsset.objects.all()})
+    # If it's a GET request or no valid currency is selected yet
+    return render(request, 'buy.html', {
+        'crypto_assets': CryptoAsset.objects.all(),
+        'selected_currency': None,
+        'total_price': None,
+    })
+def sell(request):
+    if request.method == 'POST':
+        selected_currency = request.POST.get('currency')
+        quantity = int(request.POST.get('quantity'))
+
+        # Fetch the selected cryptocurrency details
+        crypto_assets = CryptoAsset.objects.all()
+
+        # Validate if the selected currency exists
+        if selected_currency not in [crypto.name for crypto in crypto_assets]:
+            selected_currency = None  # Set selected_currency to None if it's not valid
+
+        # Calculate the total price
+        if selected_currency:
+            crypto = CryptoAsset.objects.get(name=selected_currency)
+            total_price = quantity * crypto.price
+        else:
+            total_price = None  # Set total_price to None if selected_currency is not valid
+
+        return render(request, 'sell.html', {
+            'crypto_assets': crypto_assets,
+            'selected_currency': selected_currency,
+            'total_price': total_price,
+        })
+
+    # If it's a GET request or no valid currency is selected yet
+    return render(request, 'sell.html', {
+        'crypto_assets': CryptoAsset.objects.all(),
+        'selected_currency': None,
+        'total_price': None,
+    })

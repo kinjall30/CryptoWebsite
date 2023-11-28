@@ -16,7 +16,9 @@ urlpatterns = [
     path('watchlist/', views.watchlist, name='watchlist'),
     path('base/', views.base, name='base'),
     path('profile/', views.user_profile, name='user_profile'),
-    path('buy/', views.buy, name='buy')
+    path('buy/', views.buy, name='buy'),
+    path('sell/', views.sell, name='sell'),
+
 
 ]
 

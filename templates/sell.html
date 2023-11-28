@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% block title %}Buy Crypto{% endblock %}
+{% block title %}Sell Crypto{% endblock %}
 {% block content %}
     <style>
         /* Additional CSS styles for enhanced appearance */
@@ -69,8 +69,8 @@
     </style>
 
     <div class="container">
-        <h1>Buy Crypto</h1>
-        <form method="post" action="{% url 'CoinCraft:buy' %}">
+        <h1>Sell Crypto</h1>
+        <form method="post" action="{% url 'CoinCraft:sell' %}">
             {% csrf_token %}
             <div class="form-group">
                 <label for="currency">Select Currency:</label>
