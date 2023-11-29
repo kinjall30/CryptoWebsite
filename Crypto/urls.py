@@ -3,7 +3,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from . import views
 # from CryptoCrackers import views
-from .views import signup, user_login, index, watchlist
+from .views import signup, user_login, index, watchlist, logout_view
 
 app_name = 'CoinCraft'
 
@@ -19,6 +19,7 @@ urlpatterns = [
     path('buy/', views.buy, name='buy'),
     path('sell/', views.sell, name='sell'),
     path('history/', views.transcation_info, name='history'),
+    path('logout/', views.logout_view, name='logout'),
 ]
 
 if settings.DEBUG:

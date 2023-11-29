@@ -45,7 +45,6 @@ def payment_view(request):
 
     return render(request, 'payment_form.html')
 
-
 @login_required
 def payment_success_view(request):
     if request.method == "GET":
