@@ -344,7 +344,7 @@ def user_profile(request):
 
 def buy(request):
 
-    user = username = request.session.get('username', "null")
+    username = request.session.get('username', "null")
     amount = 0.0
     wallet_value = 0.0
     wallet_entry, created = Wallet.objects.get_or_create(userName=username, defaults={'amount': amount})
@@ -373,7 +373,7 @@ def buy(request):
             total_price = None  # Set total_price to None if selected_currency is not valid
 
         if isPay:
-            wallet  = Wallet.objects.get(userName='tapan')
+            wallet  = Wallet.objects.get(userName=username)
             if(wallet.amount >= total_price): 
                 tranObj = Transactions()
                 tranObj.username = user
@@ -400,7 +400,7 @@ def buy(request):
         'crypto_assets': crypto_assets,
         'selected_currency': selected_currency,
         'total_price': total_price,
-        'wallet': updated_wallet,
+        'wallet': wallet_value,
         'pay_ready': 'false',
         'btn_value': "Calculate Total",
         'unit': quantity,
@@ -430,6 +430,7 @@ def buy(request):
          'unit': 1,
          "message": ""
     })
+
 def sell(request):
     if request.method == 'POST':
         selected_currency = request.POST.get('currency')
@@ -461,3 +462,10 @@ def sell(request):
         'selected_currency': None,
         'total_price': None,
     })
+
+
+def history(request):
+    user = username = request.session.get('username', "null")
+   
+    # If it's a GET request or no valid currency is selected yet
+    return render(request, 'sell.html')
