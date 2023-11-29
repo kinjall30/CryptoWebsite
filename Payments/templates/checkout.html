@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="flex mt-10 flex-col items-center">
+    <h1 class="text-xl">Payment Checkout Information</h1>
+    <p>Payment for {{ amount }}</p>
+    <button class="bg-[#2196f3] text-white py-2 mt-3 w-[200px]" id="checkout-button">Checkout</button>
+    <script>
+        var checkoutButton = document.getElementById('checkout-button');
+        checkoutButton.addEventListener('click',() => {
+            return window.open('{{ paymentUrl }}', '_blank');
+        })
+    </script>
+</div>
+
+{% endblock %}

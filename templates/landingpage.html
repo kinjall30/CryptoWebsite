@@ -1,197 +1,209 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Crypto Exchange Landing Page</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f8f8f8;
-            color: #333;
-        }
+{% extends 'base.html' %}
+{% block title %}Crypto Exchange Landing Page{% endblock %}
+{% block content %}
+    <div class="container mt-6" style="font-family: Arial, sans-serif;">
 
-        h1 {
-            text-align: center;
-            padding: 20px;
-            margin-bottom: 20px;
-            color: #444;
-            border-bottom: 1px solid #ddd;
-        }
+        <!-- Highlights -->
+        <div class=" flex space-between  max-h-[300px] overflow-hidden gap-4">
+            <!-- first -->
+            <div class=" flex-1 bg-[#f8f8f8] shadow-md rounded-md p-3">
+                <h2 style="color: #007bff; margin-top: 0;">Fear & Greed Index</h2>
+                {% if fear_greed_index %}
+                <p>{{ fear_greed_index }}</p>
+            {% else %}
+                <p>No data available</p>
+            {% endif %}
+            </div>
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
+            <!-- second -->
+            <div class="flex-1 bg-[#f8f8f8] shadow-md rounded-md p-3 overflow-auto">
+                <h2 style="color: #007bff; margin-top: 0;">Trending Cryptocurrencies</h2>
+                <form method="post" style="margin-bottom: 20px; text-align: center;">
+                    {% csrf_token %}
+                    <input type="submit" name="fetch_latest_data" value="Fetch Latest Data from API" style="padding: 10px 20px; background-color: #007bff; color: #fff; border: none; border-radius: 4px; cursor: pointer; font-size: 16px;">
+                </form>
+        
+                <ul style="list-style-type: none; padding: 0; margin: 0;">
+                    {% for crypto in trending_cryptos %}
+                        <li style="padding: 10px 0; border-bottom: 1px solid #ddd; color: #666;">
+                            {{ crypto.name }} ({{ crypto.symbol }}):
+                            ${{ crypto.current_price|floatformat:2 }}
+                            {% if crypto.fluctuation_percentage is not None %}
+                                {% if crypto.fluctuation_percentage > 0 %}
+                                    <span style="color: green;">({{ crypto.fluctuation_percentage|floatformat:2 }}% &#8593;)</span>
+                                {% elif crypto.fluctuation_percentage < 0 %}
+                                    <span style="color: red;">({{ crypto.fluctuation_percentage|floatformat:2 }}% &#8595;)</span>
+                                {% else %}
+                                    <span>({{ crypto.fluctuation_percentage|floatformat:2 }}%)</span>
+                                {% endif %}
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                </ul>
 
-        .fear-greed-index {
-            background-color: #fff;
-            border-radius: 5px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
+            </div>
 
-        .fear-greed-index h2 {
-            margin-top: 0;
-            color: #007bff;
-        }
+            <!-- Third -->
+            <div class="flex-1 bg-[#f8f8f8] shadow-md rounded-md p-3 overflow-auto">
 
-        .trending-section {
-            background-color: #fff;
-            border-radius: 5px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
+                <h2 style="color: #007bff; margin-top: 0;">Community Posts/News</h2>
+                <ul style="list-style-type: none; padding: 0; margin: 0;">
+                    {% for post in community_posts %}
+                        <li class="mt-6" style="padding: 10px 0; border-bottom: 1px solid #ddd; color: #444;">
+                            <strong>{{ post.title }}</strong> by {{ post.author }}<br>
+                            {{ post.content }}
+                        </li>
+                    {% endfor %}
+                </ul>
 
-        .trending-section h2 {
-            margin-top: 0;
-            color: #007bff;
-        }
 
-        .trending-section ul {
-            list-style-type: none;
-            padding: 0;
-            margin: 0;
-        }
+            </div>
+        </div>
 
-        .trending-section li {
-            padding: 10px 0;
-            border-bottom: 1px solid #ddd;
-            color: #666;
-        }
+        <!-- Main Coin Listing -->
 
-        .community-posts {
-            background-color: #fff;
-            border-radius: 5px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
+        <div class=" ">
 
-        .community-posts h2 {
-            margin-top: 0;
-            color: #007bff;
-        }
+            <h1 style="text-align: center; color: #444; padding: 20px; margin-bottom: 20px; border-bottom: 1px solid #ddd;">Select Fields to Display</h1>
+            
+            <form class="flex flex-col" id="checkboxForm" method="post" style="padding: 20px; border: 1px solid #ddd; border-radius: 5px; background-color: #f9f9f9; ">
+                {% csrf_token %}
+                <!-- Hidden input field to maintain the 'Name' checkbox status -->
+                <input type="hidden" id="nameField" name="field_selection" value="name">
+                
+            <fieldset class="flex justify-evenly items-center py-3">
+        <label><input type="checkbox" id="nameCheckbox" name="field_selection" value="name" checked disabled> Name</label>
+        <label><input type="checkbox" name="field_selection" value="price"> Price</label>
+        <label><input type="checkbox" name="field_selection" value="high"> High (24h)</label>
+        <label><input type="checkbox" name="field_selection" value="low"> Low (24h)</label>
+        <label><input type="checkbox" name="field_selection" value="price_change_24h"> Price Change (24h)</label>
+        <label><input type="checkbox" name="field_selection" value="price_change_percentage_24h"> Price Change (%) (24h)</label>
+        <label><input type="checkbox" name="field_selection" value="market_cap"> Market Cap</label>
+        <label><input type="checkbox" name="field_selection" value="volume_24h"> Volume (24h)</label>
+        <label><input type="checkbox" name="field_selection" value="circulating_supply"> Circulating Supply</label>
+        <input type="submit" value="Apply Filter" style="padding: 10px 20px; background-color: #007bff; color: #fff; border: none; border-radius: 4px; cursor: pointer; font-size: 16px;">
+    </fieldset>
+</form>
 
-        .community-posts ul {
-            list-style-type: none;
-            padding: 0;
-            margin: 0;
-        }
 
-        .community-posts li {
-            padding: 10px 0;
-            border-bottom: 1px solid #ddd;
-            color: #444;
-        }
-
-        form {
-            margin: 20px;
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            background-color: #f9f9f9;
-            max-width: 400px;
-        }
-
-        fieldset {
-            margin: 10px 0;
-            border: none;
-        }
-
-        legend {
-            font-weight: bold;
-            color: #333;
-        }
-
-        input[type="submit"] {
-            padding: 10px 20px;
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-
-        input[type="submit"]:hover {
-            background-color: #0056b3;
-        }
-
-        input[type="checkbox"] {
-            margin-right: 5px;
-        }
-    </style>
-</head>
-<body>
-
-<div class="container">
-    <h1>Crypto Exchange Landing Page</h1>
-
-    <div class="fear-greed-index">
-        <h2>Fear & Greed Index</h2>
-        {% if fear_greed_index %}
-            <p>{{ fear_greed_index }}</p>
-        {% else %}
-            <p>No data available</p>
-        {% endif %}
-    </div>
-
-    <div class="trending-section">
-        <h2>Trending Cryptocurrencies</h2>
-        <ul>
-            {% for crypto in trending_cryptos %}
-                <li>
-                    {{ crypto.name }} ({{ crypto.symbol }}):
-                    ${{ crypto.current_price|floatformat:2 }} <!-- Display current price -->
-                    {% if crypto.fluctuation_percentage is not None %}
-                        {% if crypto.fluctuation_percentage > 0 %}
-                            <span style="color: green;">({{ crypto.fluctuation_percentage|floatformat:2 }}% &#8593;)</span>
-                        {% elif crypto.fluctuation_percentage < 0 %}
-                            <span style="color: red;">({{ crypto.fluctuation_percentage|floatformat:2 }}% &#8595;)</span>
+    <!-- display Coins List Container -->
+    <div>
+        <table id="cryptoTable" cellspacing="0" cellpadding="8" style="width: 80%; margin: 20px auto; border-collapse: separate; border-spacing: 0; border: 1px solid #ddd; border-radius: 5px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); overflow: hidden;">
+            <thead style="background-color: #f2f2f2;">
+                <tr>
+                    {% for field_name in assets.0.keys %}
+                        {% if field_name == 'price' or field_name == 'price_change_24h' or field_name == 'price_change_percentage_24h' or field_name == 'market_cap' or field_name == 'volume_24h' %}
+                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid #ddd;">
+                                {{ field_name }}
+                                <button id="btn-{{ forloop.counter0 }}" onclick="sortTable({{ forloop.counter0 }})" data-dir="asc">&#8593;</button>
+                            </th>
                         {% else %}
-                            <span>({{ crypto.fluctuation_percentage|floatformat:2 }}%)</span>
+                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid #ddd;">{{ field_name }}</th>
                         {% endif %}
-                    {% endif %}
-                </li>
-            {% endfor %}
-        </ul>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for asset in assets %}
+                    <tr style="background-color: #fff;">
+                        {% for field_name, field_value in asset.items %}
+                            {% if field_name == 'price' or field_name == 'price_change_24h' or field_name == 'price_change_percentage_24h' or field_name == 'market_cap' or field_name == 'volume_24h' %}
+                                {% if field_name == 'price_change_24h' or field_name == 'price_change_percentage_24h' %}
+                                    {% if field_value > 0 %}
+                                        <td style="padding: 12px; text-align: left; border-bottom: 1px solid #ddd; color: green;">{{ field_value }}</td>
+                                    {% elif field_value < 0 %}
+                                        <td style="padding: 12px; text-align: left; border-bottom: 1px solid #ddd; color: red;">{{ field_value }}</td>
+                                    {% else %}
+                                        <td style="padding: 12px; text-align: left; border-bottom: 1px solid #ddd;">{{ field_value }}</td>
+                                    {% endif %}
+                                {% else %}
+                                    <td style="padding: 12px; text-align: left; border-bottom: 1px solid #ddd;">{{ field_value }}</td>
+                                {% endif %}
+                            {% else %}
+                                <td style="padding: 12px; text-align: left; border-bottom: 1px solid #ddd;">{{ field_value }}</td>
+                            {% endif %}
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
-
-    <div class="community-posts">
-        <h2>Community Posts/News</h2>
-        <ul>
-            {% for post in community_posts %}
-                <li>
-                    <strong>{{ post.title }}</strong> by {{ post.author }}<br>
-                    {{ post.content }}
-                </li>
-            {% endfor %}
-        </ul>
-    </div>
-
-    <h1>Select Fields to Display</h1>
-
-    <form method="post">
-        {% csrf_token %}
-        <fieldset>
-            <legend>Fields:</legend>
-            <label><input type="checkbox" name="field_selection" value="name"> Name</label><br>
-            <label><input type="checkbox" name="field_selection" value="price"> Price</label><br>
-            <label><input type="checkbox" name="field_selection" value="high"> High (24h)</label><br>
-            <label><input type="checkbox" name="field_selection" value="low"> Low (24h)</label><br>
-            <label><input type="checkbox" name="field_selection" value="price_change_24h"> Price Change (24h)</label><br>
-            <label><input type="checkbox" name="field_selection" value="price_change_percentage_24h"> Price Change (%) (24h)</label><br>
-            <label><input type="checkbox" name="field_selection" value="market_cap"> Market Cap</label><br>
-            <label><input type="checkbox" name="field_selection" value="volume_24h"> Volume (24h)</label><br>
-            <label><input type="checkbox" name="field_selection" value="circulating_supply"> Circulating Supply</label><br>
-        </fieldset>
-        <input type="submit" value="Display Selected Fields">
-    </form>
 </div>
+    </div>
 
-</body>
-</html>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var nameCheckbox = document.getElementById('nameCheckbox');
+        var nameHiddenField = document.getElementById('nameField');
+
+        // Check the 'Name' checkbox by default
+        nameCheckbox.checked = true;
+
+        // Update the hidden field value based on the 'Name' checkbox state
+        nameCheckbox.addEventListener('change', function() {
+            if (nameCheckbox.checked) {
+                nameHiddenField.value = 'name';
+            } else {
+                nameHiddenField.value = '';
+            }
+        });
+    });
+</script>
+
+<script>
+    function sortTable(n) {
+        var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+        table = document.getElementById("cryptoTable");
+        switching = true;
+        dir = "asc";
+        var button = document.getElementById("btn-" + n);
+
+        if (button.getAttribute("data-dir") === "asc") {
+            dir = "desc";
+            button.setAttribute("data-dir", "desc");
+            button.innerHTML = "&#8595;";
+        } else {
+            dir = "asc";
+            button.setAttribute("data-dir", "asc");
+            button.innerHTML = "&#8593;";
+        }
+
+        while (switching) {
+            switching = false;
+            rows = table.rows;
+
+            for (i = 1; i < (rows.length - 1); i++) {
+                shouldSwitch = false;
+
+                x = rows[i].getElementsByTagName("td")[n];
+                y = rows[i + 1].getElementsByTagName("td")[n];
+
+                var cmpX = isNaN(parseFloat(x.innerHTML.replace(/[^0-9.-]+/g,""))) ? x.innerHTML.toLowerCase() : parseFloat(x.innerHTML.replace(/[^0-9.-]+/g,""));
+                var cmpY = isNaN(parseFloat(y.innerHTML.replace(/[^0-9.-]+/g,""))) ? y.innerHTML.toLowerCase() : parseFloat(y.innerHTML.replace(/[^0-9.-]+/g,""));
+
+                if (dir === "asc") {
+                    if (cmpX > cmpY) {
+                        shouldSwitch = true;
+                        break;
+                    }
+                } else if (dir === "desc") {
+                    if (cmpX < cmpY) {
+                        shouldSwitch = true;
+                        break;
+                    }
+                }
+            }
+            if (shouldSwitch) {
+                rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                switching = true;
+                switchcount++;
+            } else {
+                if (switchcount === 0 && dir === "asc") {
+                    dir = "desc";
+                    switching = true;
+                }
+            }
+        }
+    }
+</script>
+{% endblock %}

@@ -1,12 +1,28 @@
 # forms.py
 from django import forms
-from .models import UserDetails
+from .models import UserDetails, UserIdentity
 from .models import CryptoAsset
+
 
 class SignUpForm(forms.ModelForm):
     class Meta:
         model = UserDetails
-        fields = ['username', 'email', 'password', 'first_name', 'last_name', 'date_of_birth']
+        fields = ['username', 'email', 'password', 'first_name', 'last_name', 'date_of_birth', 'identity']
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        identity = self.cleaned_data.get('identity', None)
+
+        if identity:
+            instance.identity_uploaded = True
+
+        if commit:
+            instance.save()
+        return instance
+class IdentityUploadForm(forms.ModelForm):
+    class Meta:
+        model = UserIdentity
+        fields = ['identity_uploaded', 'identity_photo']
 
 class LoginForm(forms.Form):
     username = forms.CharField()
@@ -30,3 +46,8 @@ class FieldSelectionForm(forms.Form):
         widget=forms.CheckboxSelectMultiple,
         choices=fields_choices,
     )
+
+class UserProfileForm(forms.ModelForm):
+    class Meta:
+        model = UserDetails
+        fields = ['username', 'email', 'password', 'first_name', 'last_name', 'date_of_birth']

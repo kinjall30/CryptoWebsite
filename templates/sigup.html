@@ -14,13 +14,23 @@
          <div class="header">
             Signup
          </div>
-         <form method="post" action="{% url 'CoinCraft:signup' %}">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit">Sign Up</button>
-        </form>
-      </div>
+         <form method="post" action="{% url 'CoinCraft:signup' %}" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Sign Up</button>
+</form>iv>
       <script>
+          document.getElementById('id_identity_photo').addEventListener('change', function() {
+        // Get the file input element
+        var input = document.getElementById('id_identity_photo');
+        // Get the hidden input element for identity_uploaded
+        var checkbox = document.getElementById('id_identity_uploaded');
+
+        // Check if a file is uploaded
+        if (input.files && input.files[0]) {
+            checkbox.value = "True"; // Set the value to True if file is uploaded
+        }
+    });
          function show(){
           var pswrd = document.getElementById('pswrd');
           var icon = document.querySelector('.fas');
