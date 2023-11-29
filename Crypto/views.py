@@ -1,3 +1,4 @@
+
 # views.py
 import requests
 from bs4 import BeautifulSoup
@@ -482,5 +483,9 @@ def transcation_info(request):
     else:
         return render(request, 'history.html')
     
-
+@login_required
+def logout_view(request):
+    logout(request)
+    messages.success(request, 'You have been logged out successfully.')
+    return redirect('CryptoCrackers:login')
 

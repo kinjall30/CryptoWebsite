@@ -10,6 +10,7 @@ class UserDetails(models.Model):
     date_of_birth = models.DateField(blank=True, null=True)
     identity_uploaded = models.BooleanField(default=False)  # New field for identity upload status
     identity = models.FileField(upload_to='user_identities/', blank=True, null=True)  # New field for identity file upload
+    profile_picture = models.ImageField(upload_to='profile_pictures/', default='profile_pictures/default.jpg')
 
     def __str__(self):
         return self.username
@@ -78,3 +79,5 @@ class Transactions(models.Model):
     symbol = models.CharField(max_length=10)
     unit = models.DecimalField(max_digits=10, decimal_places=2)
     price = models.DecimalField(max_digits=10, decimal_places=2)
+# models.py
+from django.db import models
