@@ -464,8 +464,17 @@ def sell(request):
     })
 
 
-def history(request):
-    user = username = request.session.get('username', "null")
-   
-    # If it's a GET request or no valid currency is selected yet
-    return render(request, 'sell.html')
+def wallet_info(request):
+    # Check if the user is logged in
+    if request.user.is_authenticated:
+        # Query the Wallet model to get the wallets for the logged-in user
+        user_wallets = Wallet.objects.filter(userName=request.user.username)
+
+        # You can then pass the user's wallets to the template
+        context = {'user_wallets': user_wallets}
+        print(user_wallets)
+        return render(request, 'history.html', context)
+    else:
+        # Handle the case where the user is not logged in
+        return render(request, 'history.html')
+
