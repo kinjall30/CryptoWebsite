@@ -228,13 +228,14 @@ def landing_page(request):
     form = FieldSelectionForm(request.POST or None)
 
     defaultList = ['name', 'high', 'low', 'price_change_24h', 'price_change_percentage_24h', 'market_cap', 'volume_24h', 'circulating_supply']
-    assets = CryptoAsset.objects.values(*defaultList)
+    # assets = CryptoAsset.objects.values(*defaultList)
+    assets = crypto_assets(defaultList)
    
     if request.method == 'POST' and form.is_valid():
         selected_fields = form.cleaned_data['field_selection']
 
         # Retrieve only selected fields from the database
-        assets = CryptoAsset.objects.values(*selected_fields)
+        assets = crypto_assets(selected_fields)
       
 
         # context = {
@@ -253,83 +254,72 @@ def landing_page(request):
     return render(request, 'landingpage.html', context)
 
 
-def crypto_assets(request):
-    if request.method == 'POST':
-        fetch_new_data = request.POST.get('fetch_new_data')
-        if fetch_new_data:
-            # API endpoint to fetch cryptocurrency data (replace with actual API endpoint)
-            api_url = 'https://api.coingecko.com/api/v3/coins/markets'
-            params = {
-                'vs_currency': 'usd',
-                'order': 'market_cap_desc',
-                'per_page': 50,
-                'page': 1,
-                'sparkline': False,
-            }
+def crypto_assets(defaultList):
+        # API endpoint to fetch cryptocurrency data (replace with actual API endpoint)
+        api_url = 'https://api.coingecko.com/api/v3/coins/markets'
+        params = {
+            'vs_currency': 'usd',
+            'order': 'market_cap_desc',
+            'per_page': 50,
+            'page': 1,
+            'sparkline': False,
+        }
 
-            # Making a GET request to fetch cryptocurrency data from the API
-            response = requests.get(api_url, params=params)
+        # Making a GET request to fetch cryptocurrency data from the API
+        response = requests.get(api_url, params=params)
 
-            if response.status_code == 200:
-                data = response.json()
-                crypto_assets = []
+        if response.status_code == 200:
+            data = response.json()
+            crypto_assets = []
 
-                for item in data:
-                    # Check if all necessary fields are present in the API response
-                    if all(key in item for key in ['name', 'current_price', 'high_24h', 'low_24h',
-                                                   'price_change_24h', 'price_change_percentage_24h',
-                                                   'market_cap', 'total_volume', 'circulating_supply']):
-                        # Check if the cryptocurrency already exists in the database
-                        existing_asset = CryptoAsset.objects.filter(name=item['name']).first()
+            for item in data:
+                # Check if all necessary fields are present in the API response
+                if all(key in item for key in ['name', 'current_price', 'high_24h', 'low_24h',
+                                               'price_change_24h', 'price_change_percentage_24h',
+                                               'market_cap', 'total_volume', 'circulating_supply']):
+                    # Check if the cryptocurrency already exists in the database
+                    existing_asset = CryptoAsset.objects.filter(name=item['name']).first()
 
-                        if existing_asset:
-                            # Update existing data
-                            existing_asset.price = item['current_price']
-                            existing_asset.high = item['high_24h']
-                            existing_asset.low = item['low_24h']
-                            existing_asset.price_change_24h = item['price_change_24h']
-                            existing_asset.price_change_percentage_24h = item['price_change_percentage_24h']
-                            existing_asset.market_cap = item['market_cap']
-                            existing_asset.volume_24h = item['total_volume']
-                            existing_asset.circulating_supply = item['circulating_supply']
-                            # Update other fields as needed
+                    if existing_asset:
+                        # Update existing data
+                        existing_asset.price = item['current_price']
+                        existing_asset.high = item['high_24h']
+                        existing_asset.low = item['low_24h']
+                        existing_asset.price_change_24h = item['price_change_24h']
+                        existing_asset.price_change_percentage_24h = item['price_change_percentage_24h']
+                        existing_asset.market_cap = item['market_cap']
+                        existing_asset.volume_24h = item['total_volume']
+                        existing_asset.circulating_supply = item['circulating_supply']
+                        # Update other fields as needed
 
-                            existing_asset.save()
-                        else:
-                            # Create a new cryptocurrency asset
-                            asset = CryptoAsset(
-                                name=item['name'],
-                                price=item['current_price'],
-                                high=item['high_24h'],
-                                low=item['low_24h'],
-                                price_change_24h=item['price_change_24h'],
-                                price_change_percentage_24h=item['price_change_percentage_24h'],
-                                market_cap=item['market_cap'],
-                                volume_24h=item['total_volume'],
-                                circulating_supply=item['circulating_supply'],
-                                # Add other fields if necessary
-                            )
+                        existing_asset.save()
+                    else:
+                        # Create a new cryptocurrency asset
+                        asset = CryptoAsset(
+                            name=item['name'],
+                            price=item['current_price'],
+                            high=item['high_24h'],
+                            low=item['low_24h'],
+                            price_change_24h=item['price_change_24h'],
+                            price_change_percentage_24h=item['price_change_percentage_24h'],
+                            market_cap=item['market_cap'],
+                            volume_24h=item['total_volume'],
+                            circulating_supply=item['circulating_supply'],
+                            # Add other fields if necessary
+                        )
 
-                            crypto_assets.append(asset)
+                        crypto_assets.append(asset)
 
-                # Bulk create new assets if any
-                if crypto_assets:
-                    CryptoAsset.objects.bulk_create(crypto_assets)
+            # Bulk create new assets if any
+            if crypto_assets:
+                CryptoAsset.objects.bulk_create(crypto_assets)
 
-                # Retrieving data from the database
-                assets = CryptoAsset.objects.all()
-            else:
-                assets = CryptoAsset.objects.all()  # Fallback to database if API fails
-            # return HttpResponseRedirect('/crypto_assets/')
-            return redirect("CryptoCrackers:index")
-    # Retrieve data from the database
-    assets = CryptoAsset.objects.all()
-    context = {
-        'crypto_assets': assets,
-    }
-    return render(request, 'crypto_assets.html', context)
+            # Retrieving data from the database
+            assets = CryptoAsset.objects.values(*defaultList)
+        else:
+            assets = CryptoAsset.objects.values(*defaultList)
+        return assets
 
-    # return render(request, 'base.html', context)
 
 
 def user_profile(request):
@@ -394,7 +384,7 @@ def buy(request):
                 tranObj.save()
 
                 updated_wallet =  wallet.amount - Decimal(total_price)
-                Wallet.amount = updated_wallet
+                wallet.amount = updated_wallet
                 wallet.save()
                 return render(request, 'buy.html', {
                 'crypto_assets': crypto_assets,
