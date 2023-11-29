@@ -2,7 +2,7 @@
 {% block title %}History{% endblock %}
 {% block content %}
     <div>
-        <h1>Your Wallet Information</h1>
+        <h1>Your Transaction Information</h1>
 
 {% if histroy %}
 <table class="min-w-full bg-white border border-gray-300">
@@ -30,4 +30,27 @@
     <p>No wallet information found for the logged-in user.</p>
 {% endif %}
     </div>
+
+    <div>
+        <h1>Your Wallet Information</h1>
+
+{% if user_wallet %}
+    <table border="1">
+        <thead>
+            <tr>
+                <th>User</th>
+                <th>Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{ user_wallet.userName }}</td>
+                <td>{{ user_wallet.amount }}</td>
+            </tr>
+        </tbody>
+    </table>
+{% else %}
+    <p>No wallet information found for the logged-in user.</p>
+{% endif %}
+</div>
 {% endblock %}
