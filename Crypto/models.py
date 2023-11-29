@@ -72,3 +72,9 @@ class Coin(models.Model):
     volume_24h = models.DecimalField(max_digits=15, decimal_places=2)
     change_24h = models.DecimalField(max_digits=5, decimal_places=2)
 
+class Transactions(models.Model):
+    username = models.CharField(max_length=255)
+    tranType = models.CharField(max_length=100)
+    symbol = models.CharField(max_length=10)
+    unit = models.DecimalField(max_digits=10, decimal_places=2)
+    price = models.DecimalField(max_digits=10, decimal_places=2)

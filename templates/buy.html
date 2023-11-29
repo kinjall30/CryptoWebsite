@@ -68,6 +68,7 @@
 
     <div class="container mt-6 shadow-md">
         <h1>Buy Crypto</h1>
+        <p>{{message}}</p>
         <form method="post" action="{% url 'CoinCraft:buy' %}">
             {% csrf_token %}
             <div class="form-group">
@@ -84,14 +85,21 @@
             </div>
             <div class="form-group">
                 <label for="quantity">Quantity:</label>
-                <input type="number" id="quantity" name="quantity" min="1" required>
+                <input type="number" id="quantity" name="quantity" min="1" value="{{unit}}" required>
             </div>
-            <button type="submit" class="submit-button">Calculate Total</button>
-        </form>
-        {% if total_price %}
-            <div class="total-price">
+            {% if total_price %}
+            <div class="total-price flex justify-between mb-3">
                 Total Price: ${{ total_price }}
             </div>
-        {% endif %}
+            <input type="hidden" name="pay_ready" value="{{pay_ready}}">
+            {% endif %}
+            <input type="submit" class="submit-button" value="{{btn_value}}" ></input>
+            {% if wallet %}
+            <div class="mt-6">
+                Your current Wallet:  ${{wallet}}
+            </div>
+            {% endif%}
+            
+        </form>
     </div>
 {% endblock %}

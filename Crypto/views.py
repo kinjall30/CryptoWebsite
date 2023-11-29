@@ -20,6 +20,9 @@ from .forms import FieldSelectionForm, UserProfileForm, IdentityUploadForm
 from .models import UserProfile, Post
 from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
+from Payments.models import Wallet
+from .models import Transactions
+from decimal import Decimal
 
 
 def signup(request):
@@ -350,9 +353,20 @@ def user_profile(request):
 
 
 def buy(request):
+
+    user = username = request.session.get('username', "null")
+    amount = 0.0
+    wallet_value = 0.0
+    wallet_entry, created = Wallet.objects.get_or_create(userName=username, defaults={'amount': amount})
+
+
+    if not created:
+        wallet_value = wallet_entry.amount
+
     if request.method == 'POST':
         selected_currency = request.POST.get('currency')
         quantity = int(request.POST.get('quantity'))
+        isPay = request.POST.get('pay_ready') == "true"
 
         # Fetch the selected cryptocurrency details
         crypto_assets = CryptoAsset.objects.all()
@@ -368,10 +382,51 @@ def buy(request):
         else:
             total_price = None  # Set total_price to None if selected_currency is not valid
 
+        if isPay:
+            wallet  = Wallet.objects.get(userName='tapan')
+            if(wallet.amount >= total_price): 
+                tranObj = Transactions()
+                tranObj.username = user
+                tranObj.tranType = "BUY"
+                tranObj.symbol = selected_currency
+                tranObj.unit = quantity
+                tranObj.price = total_price
+                tranObj.save()
+
+                updated_wallet =  wallet.amount - Decimal(total_price)
+                Wallet.amount = updated_wallet
+                wallet.save()
+                return render(request, 'buy.html', {
+                'crypto_assets': crypto_assets,
+                'selected_currency': selected_currency,
+                'total_price': total_price,
+                'wallet': updated_wallet,
+                'pay_ready': 'false',
+                'btn_value': "Calculate Total",
+                'unit': quantity,
+                'message': "Success ! Checkout the trancation history"
+        })
+            return render(request, 'buy.html', {
+        'crypto_assets': crypto_assets,
+        'selected_currency': selected_currency,
+        'total_price': total_price,
+        'wallet': updated_wallet,
+        'pay_ready': 'false',
+        'btn_value': "Calculate Total",
+        'unit': quantity,
+        'message': "You don't have enough balance"
+        })
+
+
         return render(request, 'buy.html', {
             'crypto_assets': crypto_assets,
             'selected_currency': selected_currency,
             'total_price': total_price,
+            'wallet': wallet_value,
+            'pay_ready': 'true',
+            'btn_value': "Confirm ?",
+            'unit': quantity,
+            'message': ""
         })
 
     # If it's a GET request or no valid currency is selected yet
@@ -379,6 +434,11 @@ def buy(request):
         'crypto_assets': CryptoAsset.objects.all(),
         'selected_currency': None,
         'total_price': None,
+        'wallet': wallet_value,
+        'pay_ready': 'false',
+        'btn_value': "Calculate Total",
+         'unit': 1,
+         "message": ""
     })
 def sell(request):
     if request.method == 'POST':
