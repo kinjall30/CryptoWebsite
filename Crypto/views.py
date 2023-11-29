@@ -468,16 +468,14 @@ def sell(request):
 
 @login_required
 def transcation_info(request):
-    # Check if the user is logged in
     if request.user.is_authenticated:
-        # Query the Wallet model to get the wallets for the logged-in user
         user_tran = Transactions.objects.filter(username=request.user.username)
+        user_wallets = Wallet.objects.filter(userName=request.user.username)
 
-        # You can then pass the user's wallets to the template
-        context = {'histroy': user_tran}
-        print(user_tran[0].username, "====================================")
+        context = {'histroy': user_tran, 'user_wallets': user_wallets}
         return render(request, 'history.html', context)
     else:
-        # Handle the case where the user is not logged in
         return render(request, 'history.html')
+    
+
 
