@@ -12,7 +12,6 @@ class UserDetails(models.Model):
     identity = models.FileField(upload_to='user_identities/', blank=True, null=True)  # New field for identity file upload
     profile_photo = models.ImageField(upload_to='user_profiles/', blank=True, null=True)
 
-
     def __str__(self):
         return self.username
 

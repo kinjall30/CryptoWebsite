@@ -1,14 +1,16 @@
 # views.py
+import form
 import praw
 import requests
 from bs4 import BeautifulSoup
 from django.contrib import messages
-from django.contrib.auth import logout
+from django.contrib.auth import logout, login
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.hashers import make_password
 from django.http import HttpResponseServerError
 from django.shortcuts import render, redirect
 
-from .forms import FieldSelectionForm, UserProfileForm
+from .forms import FieldSelectionForm, UserProfileForm, ChangePasswordForm
 from .forms import SignUpForm, LoginForm
 from .models import CryptoAsset, TrendingCrypto
 from .models import UserDetails
@@ -341,7 +343,60 @@ def buy(request):
 
 # Dhruvesh added code start
 #@login_required(login_url='CryptoCrackers:login')
+from django.shortcuts import render, redirect
+from .forms import UserProfileForm
+from .models import UserDetails
+from django.contrib import messages
+
 def user_profile(request):
+    user_id = request.session.get('user_id')
+
+    if not user_id:
+        return redirect('CryptoCrackers:login')
+
+    original_user = UserDetails.objects.get(id=user_id)
+
+    if request.method == 'POST':
+        form = UserProfileForm(request.POST, request.FILES, instance=original_user)
+        if form.is_valid():
+            updated_user = form.save(commit=False)
+            updated_user.save()
+            messages.success(request, 'Profile updated successfully.')
+            return redirect('CryptoCrackers:user_profile')
+        else:
+            messages.error(request, 'Form is not valid. Please check the input.')
+            print(form.errors)  # Print form errors to the console for debugging
+    else:
+        form = UserProfileForm(instance=original_user)
+
+    return render(request, 'user_profile.html', {'form': form, 'user': original_user})
+
+
+def user_profile(request):
+    user_id = request.session.get('user_id')
+
+    if not user_id:
+        return redirect('CryptoCrackers:login')
+
+    original_user = UserDetails.objects.get(id=user_id)
+
+    if request.method == 'POST':
+        form = UserProfileForm(request.POST, request.FILES, instance=original_user)
+        if form.is_valid():
+            updated_user = form.save(commit=False)
+            updated_user.save()
+            messages.success(request, 'Profile updated successfully.')
+            return redirect('CryptoCrackers:user_profile')
+        else:
+            messages.error(request, 'Form is not valid. Please check the input.')
+            print(form.errors)  # Print form errors to the console for debugging
+    else:
+        form = UserProfileForm(instance=original_user)
+
+    return render(request, 'user_profile.html', {'form': form, 'user': original_user})
+
+
+def change_password(request):
     user_id = request.session.get('user_id')
 
     if not user_id:
@@ -350,15 +405,29 @@ def user_profile(request):
     user = UserDetails.objects.get(id=user_id)
 
     if request.method == 'POST':
-        form = UserProfileForm(request.POST, request.FILES, instance=user)
+        form = ChangePasswordForm(request.POST)
         if form.is_valid():
-            form.save()
-            messages.success(request, 'Profile updated successfully.')
-            return redirect('CryptoCrackers:user_profile')
-    else:
-        form = UserProfileForm(instance=user)
+            old_password = form.cleaned_data['old_password']
+            new_password = form.cleaned_data['new_password']
+            confirm_new_password = form.cleaned_data['confirm_new_password']
 
-    return render(request, 'user_profile.html', {'form': form, 'user': user})
+            # Check old password using user.check_password
+            if old_password == user.password:
+                if new_password == confirm_new_password:
+                    # Use make_password to hash the new password
+                    user.password = new_password
+                    user.save()
+                    messages.success(request, 'Password changed successfully.')
+                    return redirect('CryptoCrackers:change_password')
+                else:
+                    messages.error(request, 'New passwords do not match.')
+            else:
+                messages.error(request, 'Invalid old password.')
+    else:
+        form = ChangePasswordForm()
+
+    return render(request, 'change_password.html', {'form': form})
+
 
 
 def logout_view(request):

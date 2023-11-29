@@ -3,7 +3,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from . import views
 # from CryptoCrackers import views
-from .views import signup, user_login, index, watchlist, user_profile, logout_view
+from .views import signup, user_login, index, watchlist, user_profile, logout_view, change_password
 
 app_name = 'CoinCraft'
 
@@ -20,6 +20,7 @@ urlpatterns = [
 
     #Dhruvesh added code start
     path('profile/', views.user_profile, name='user_profile'),
+    path('change-password/', change_password, name='change_password'),
     path('logout/', views.logout_view, name='logout')
     #End
 ]

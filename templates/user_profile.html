@@ -5,72 +5,82 @@
   User Profile
 {% endblock %}
 
-{% block css %}
-  {{ block.super }}
-  <link rel="stylesheet" href="{% static 'user_profile.css' %}">
-   <style>
-    /* Add your custom styles here */
-    .form-label {
-      display: block;
-      margin-bottom: 5px;
-      font-weight: bold;
-    }
-
-    .form-input {
-      width: 100%;
-      padding: 8px;
-      margin-bottom: 15px;
-      box-sizing: border-box;
-    }
-
-    /* Add more styles as needed */
-  </style>
-{% endblock %}
+{#{% block css %}#}
+{#  {{ block.super }}#}
+{#  <link rel="stylesheet" href="{% static 'user_profile.css' %}">#}
+{#{% endblock %}#}
 
 {% block content %}
   <div class="new-container">
     <div class="new-content">
 
       {% if user.profile_photo %}
-
         <img src="{{ user.profile_photo.url }}" alt="Profile Photo">
       {% else %}
-        <img src="{% static 'default.png' %}" style="max-width: 15%;" alt="Default Profile Photo">
+        <img src="{% static 'default1.png' %}" style="max-width: 15%; margin-top: 10px; margin-left: 25px; border-radius: 50%;" alt="Default Profile Photo">
       {% endif %}
       <form method="post" action="{% url 'CryptoCrackers:user_profile' %}" enctype="multipart/form-data">
         {% csrf_token %}
            {# Display username and email as plain text (uneditable) #}
-        <label style="display: block; margin-bottom: 5px;font-weight: bold;" for="id_username"><strong>Username:</strong></label>
-        <input style="width: 100%; padding: 8px; margin-bottom: 15px; box-sizing: border-box;" type="text" id="id_username" value="{{ form.instance.username }}" readonly>
+        <label style="display: block; margin-left: 25px; margin-bottom: 5px;font-weight: bold;" for="id_username"><strong>Username:</strong></label>
+        <p>{{ user.username }}</p>
+          <br>
+        <label style="display: block; margin-left: 25px; margin-bottom: 5px;font-weight: bold;" for="id_email"><strong>Email:</strong></label>
+        <input  style="width: 50%; border-width: 2px; border-style: solid; margin-left: 25px; padding: 8px; margin-bottom: 15px; box-sizing: border-box;" type="email" id="id_email" name="email" value="{{ form.instance.email }}">
 
-        <label for="id_email"><strong>Email:</strong></label>
-        <input type="email" id="id_email" name="email" value="{{ form.instance.email }}">
+        <label style="display: block; margin-left: 25px; margin-bottom: 5px;font-weight: bold;" for="id_first_name"><strong>First Name:</strong></label>
+        <input style="width: 50%; border-width: 2px; border-style: solid; margin-left: 25px; padding: 8px; margin-bottom: 15px; box-sizing: border-box;" type="text" id="id_first_name" name="first_name" value="{{ form.instance.first_name }}">
 
-        <label for="id_first_name"><strong>First Name:</strong></label>
-        <input type="text" id="id_first_name" name="first_name" value="{{ form.instance.first_name }}">
+        <label style="display: block; margin-left: 25px; margin-bottom: 5px;font-weight: bold;" for="id_last_name"><strong>Last Name:</strong></label>
+        <input style="width: 50%; border-width: 2px; border-style: solid; margin-left: 25px; padding: 8px; margin-bottom: 15px; box-sizing: border-box;" type="text" id="id_last_name" name="last_name" value="{{ form.instance.last_name }}">
+        <br>
 
-        <label for="id_last_name"><strong>Last Name:</strong></label>
-        <input type="text" id="id_last_name" name="last_name" value="{{ form.instance.last_name }}">
-
-        <label for="id_password"><strong>Password: </strong></label>
-        <input type="text" id="id_password" name="password" value="{{ form.instance.password }}">
-
-
-          {# Display other editable fields using form.as_p #}
-{#            <p style="border: 1px solid #ccc; padding: 5px;"><strong>Email:</strong> {{ form.email }}</p>#}
-{#            <p><strong>First Name:</strong> {{ form.first_name }}</p>#}
-{#            <p><strong>Last Name:</strong> {{ form.last_name }}</p>#}
-{#            <p><strong>Date of Birth:</strong> {{ form.date_of_birth }}</p>#}
-
-
-        <label for="id_profile_photo">Update Image:</label>
-        <input type="file" id="id_profile_photo" name="profile_photo" accept="image/*"><br>
-
-        <button type="submit">Save Changes</button><br>
+        <button id="save_changes" type="submit">Save Changes</button>
         <a href="{% url 'CryptoCrackers:index' %}">
-          <button type="button">Cancel</button>
+          <button id="cancel_button" type="button">Cancel</button>
         </a>
       </form>
     </div>
   </div>
+    <style>
+    #save_changes {
+        /* Add some basic styling */
+        margin-left: 25px;
+        padding: 10px 20px;
+        font-size: 16px;
+        font-weight: bold;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
+
+        color: #fff;
+        background-color: #4caf50; /* Green color, you can customize this */
+        border: 2px solid #4caf50;
+        &:hover {
+            background-color: #249326; /* Darker green color on hover */
+        }
+    }
+
+  #cancel_button {
+  padding: 10px 20px;
+  margin-left: 20px;
+  font-size: 16px;
+  font-weight: bold;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+
+  color: #fff;
+  background-color: #f44336; /* Red color, you can customize this */
+  border: 2px solid #f44336;
+
+  &:hover {
+    background-color: #d32f2f; /* Darker red color on hover */
+  }
+}
+</style>
 {% endblock %}

@@ -47,7 +47,14 @@ class FieldSelectionForm(forms.Form):
         choices=fields_choices,
     )
 
+
 class UserProfileForm(forms.ModelForm):
     class Meta:
         model = UserDetails
-        fields = ['username', 'email', 'password', 'first_name', 'last_name', 'date_of_birth', 'profile_photo']
+        fields = ['email', 'first_name', 'last_name',]
+
+
+class ChangePasswordForm(forms.Form):
+    old_password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'password-input'}))
+    new_password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'password-input'}))
+    confirm_new_password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'password-input'}))
