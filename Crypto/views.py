@@ -23,6 +23,7 @@ from django.http import JsonResponse
 from Payments.models import Wallet
 from .models import Transactions
 from decimal import Decimal
+from django.contrib.auth.decorators import login_required
 
 
 def signup(request):
@@ -341,10 +342,10 @@ def user_profile(request):
 
     return render(request, 'user_profile.html', {'form': form, 'user': user})
 
-
+@login_required
 def buy(request):
 
-    username = request.session.get('username', "null")
+    username = request.user.username
     amount = 0.0
     wallet_value = 0.0
     wallet_entry, created = Wallet.objects.get_or_create(userName=username, defaults={'amount': amount})
@@ -376,7 +377,7 @@ def buy(request):
             wallet  = Wallet.objects.get(userName=username)
             if(wallet.amount >= total_price): 
                 tranObj = Transactions()
-                tranObj.username = user
+                tranObj.username = username
                 tranObj.tranType = "BUY"
                 tranObj.symbol = selected_currency
                 tranObj.unit = quantity
@@ -431,6 +432,7 @@ def buy(request):
          "message": ""
     })
 
+@login_required
 def sell(request):
     if request.method == 'POST':
         selected_currency = request.POST.get('currency')
@@ -464,15 +466,16 @@ def sell(request):
     })
 
 
-def wallet_info(request):
+@login_required
+def transcation_info(request):
     # Check if the user is logged in
     if request.user.is_authenticated:
         # Query the Wallet model to get the wallets for the logged-in user
-        user_wallets = Wallet.objects.filter(userName=request.user.username)
+        user_tran = Transactions.objects.filter(username=request.user.username)
 
         # You can then pass the user's wallets to the template
-        context = {'user_wallets': user_wallets}
-        print(user_wallets)
+        context = {'histroy': user_tran}
+        print(user_tran[0].username, "====================================")
         return render(request, 'history.html', context)
     else:
         # Handle the case where the user is not logged in

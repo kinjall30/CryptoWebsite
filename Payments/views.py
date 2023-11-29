@@ -4,6 +4,7 @@ from django.conf import settings
 from .models import Wallet
 from decimal import Decimal
 import stripe
+from django.contrib.auth.decorators import login_required
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
@@ -13,10 +14,9 @@ print(settings.STRIPE_SECRET_KEY, settings.STRIPE_PUBLIC_KEY, "-----------------
 #     # 
 #     return HttpResponse( "Hello World")
 
-
+@login_required
 def payment_view(request):
-    print(request.session.get('username'), "---------------session")
-    username = request.session.get('username', "null")
+    username =request.user.username
     if request.method == 'POST':
         amount = request.POST['amount']
 
@@ -45,9 +45,11 @@ def payment_view(request):
 
     return render(request, 'payment_form.html')
 
+
+@login_required
 def payment_success_view(request):
     if request.method == "GET":
-        username = request.session.get('username', "null")
+        username = request.user.username
         amount = Decimal(request.GET.get('amount', '0.0'))
 
         # Check if Wallet entry with the given userName exists

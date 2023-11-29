@@ -4,21 +4,28 @@
     <div>
         <h1>Your Wallet Information</h1>
 
-{% if user_wallet %}
-    <table border="1">
-        <thead>
-            <tr>
-                <th>User</th>
-                <th>Amount</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>{{ user_wallet.userName }}</td>
-                <td>{{ user_wallet.amount }}</td>
-            </tr>
-        </tbody>
-    </table>
+{% if histroy %}
+<table class="min-w-full bg-white border border-gray-300">
+    <thead>
+      <tr>
+        <th class="py-2 px-4 border-b">Coin</th>
+        <th class="py-2 px-4 border-b">Action</th>
+        <th class="py-2 px-4 border-b">Unit</th>
+        <th class="py-2 px-4 border-b">Price</th>
+      </tr>
+    </thead>
+    <tbody>
+        {% for row in histroy %}
+        <tr>
+            <td>{{ row.symbol }}</td>
+            <td>{{ row.tranType }}</td>
+            <td>{{ row.unit }}</td>
+            <td>{{ row.price }}</td>
+        </tr>
+      {% endfor %}
+      <!-- Add more rows as needed -->
+    </tbody>
+  </table>
 {% else %}
     <p>No wallet information found for the logged-in user.</p>
 {% endif %}
