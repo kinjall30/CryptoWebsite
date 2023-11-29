@@ -227,16 +227,19 @@ def landing_page(request):
 
     fear_greed_index = fetch_fear_greed_index()
     form = FieldSelectionForm(request.POST or None)
-
+    if(request.GET.get('cur')):
+        curr = request.GET.get('cur')
+    else:
+        curr = "usd"
     defaultList = ['name', 'high', 'low', 'price_change_24h', 'price_change_percentage_24h', 'market_cap', 'volume_24h', 'circulating_supply']
     # assets = CryptoAsset.objects.values(*defaultList)
-    assets = crypto_assets(defaultList)
+    assets = crypto_assets(defaultList, curr)
    
     if request.method == 'POST' and form.is_valid():
         selected_fields = form.cleaned_data['field_selection']
 
         # Retrieve only selected fields from the database
-        assets = crypto_assets(selected_fields)
+        assets = crypto_assets(selected_fields, curr)
       
 
         # context = {
@@ -249,17 +252,19 @@ def landing_page(request):
         'community_posts': community_posts,
         'fear_greed_index': fear_greed_index,
         'form': form,
-        'assets': assets
+        'assets': assets,
+        'curr': curr
     }
 
     return render(request, 'landingpage.html', context)
 
 
-def crypto_assets(defaultList):
+def crypto_assets(defaultList, curr = "usd"):
+        print(curr, "========================================cuuuuuurrrrrr")
         # API endpoint to fetch cryptocurrency data (replace with actual API endpoint)
         api_url = 'https://api.coingecko.com/api/v3/coins/markets'
         params = {
-            'vs_currency': 'usd',
+            'vs_currency': curr,
             'order': 'market_cap_desc',
             'per_page': 50,
             'page': 1,

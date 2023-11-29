@@ -62,9 +62,7 @@
 
         <!-- Main Coin Listing -->
 
-        <div class=" ">
-
-            <h1 style="text-align: center; color: #444; padding: 20px; margin-bottom: 20px; border-bottom: 1px solid #ddd;">Select Fields to Display</h1>
+        <div class="mt-6 ">
             
             <form class="flex flex-col" id="checkboxForm" method="post" style="padding: 20px; border: 1px solid #ddd; border-radius: 5px; background-color: #f9f9f9; ">
                 {% csrf_token %}
@@ -84,6 +82,19 @@
         <input type="submit" value="Apply Filter" style="padding: 10px 20px; background-color: #007bff; color: #fff; border: none; border-radius: 4px; cursor: pointer; font-size: 16px;">
     </fieldset>
 </form>
+
+    <!-- currency converter -->
+    <div>
+        <form method="GET">
+            <select id="currency-select" name="curr" value="gbp">
+                <option value="usd">USD</option>
+                <option value="cad">CAD</option>
+                <option value="eur">EUR</option>
+                <option value="gbp">GBP</option>
+            </select>
+            <input type="submit" value="Change Currency"class="mt-4 bg-blue-500 text-white px-4 py-2"></input>
+        </form>
+    </div>
 
 
     <!-- display Coins List Container -->
