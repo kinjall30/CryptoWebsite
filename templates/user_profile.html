@@ -22,8 +22,8 @@
       <form method="post" action="{% url 'CryptoCrackers:user_profile' %}" enctype="multipart/form-data">
         {% csrf_token %}
            {# Display username and email as plain text (uneditable) #}
-        <label style="display: block; margin-left: 25px; margin-bottom: 5px;font-weight: bold;" for="id_username"><strong>Username:</strong></label>
-        <p>{{ user.username }}</p>
+        <label style="display: block; margin-top: 20px; margin-left: 25px; margin-bottom: 5px;font-weight: bold;" for="id_username"><strong>Username:</strong></label>
+        <p style="font-size: 30px; margin-left: 25px; padding: 8px;">{{ user.username }}</p>
           <br>
         <label style="display: block; margin-left: 25px; margin-bottom: 5px;font-weight: bold;" for="id_email"><strong>Email:</strong></label>
         <input  style="width: 50%; border-width: 2px; border-style: solid; margin-left: 25px; padding: 8px; margin-bottom: 15px; box-sizing: border-box;" type="email" id="id_email" name="email" value="{{ form.instance.email }}">
